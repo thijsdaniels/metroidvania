@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqfrngjwqnade"]
+
+[ext_resource type="Script" path="res://scripts/TileDetector2D.cs" id="1_dw5qv"]
+
+[node name="WaterDetector2D" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_dw5qv")

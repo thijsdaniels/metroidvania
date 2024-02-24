@@ -1,0 +1,362 @@
+[gd_scene load_steps=41 format=3 uid="uid://cj6jt7wugt5b7"]
+
+[ext_resource type="Script" path="res://scripts/Player.cs" id="1_tiuq8"]
+[ext_resource type="Texture2D" uid="uid://cxm67ae15llvy" path="res://assets/textures/MinimalMetroidvaniaCharacters.png" id="2_tbmxl"]
+[ext_resource type="Script" path="res://scripts/FiniteStateMachine.cs" id="2_uv754"]
+[ext_resource type="Script" path="res://scripts/states/PlayerIdle.cs" id="3_fbuir"]
+[ext_resource type="PackedScene" uid="uid://cc8aulwq35g2o" path="res://scenes/LadderDetector2D.tscn" id="3_py7m2"]
+[ext_resource type="Script" path="res://scripts/states/PlayerRun.cs" id="4_avsiq"]
+[ext_resource type="Script" path="res://scripts/states/PlayerJump.cs" id="5_h1xfj"]
+[ext_resource type="Script" path="res://scripts/states/PlayerFall.cs" id="6_2s1mb"]
+[ext_resource type="Script" path="res://scripts/states/PlayerSwim.cs" id="7_86bux"]
+[ext_resource type="PackedScene" uid="uid://bqfrngjwqnade" path="res://scenes/WaterDetector2D.tscn" id="8_jo0ew"]
+[ext_resource type="AudioStream" uid="uid://cem8sdgg8mh6q" path="res://assets/audio/effects/playerJump.wav" id="9_5n4l8"]
+[ext_resource type="Script" path="res://scripts/states/PlayerLand.cs" id="10_u0lcc"]
+[ext_resource type="Script" path="res://scripts/states/PlayerClimb.cs" id="10_yfb2l"]
+[ext_resource type="AudioStream" uid="uid://5gl8d08wn02m" path="res://assets/audio/effects/playerLand.wav" id="11_m68mo"]
+[ext_resource type="Script" path="res://scripts/states/PlayerCrouch.cs" id="12_x8xw6"]
+[ext_resource type="Script" path="res://scripts/states/PlayerRoll.cs" id="13_talav"]
+[ext_resource type="AudioStream" uid="uid://qxpiwxrt7ow5" path="res://assets/audio/effects/playerAirJump.wav" id="15_yjmct"]
+[ext_resource type="AudioStream" uid="uid://bejdegdgy1bsn" path="res://assets/audio/effects/doorOpen.wav" id="17_nlsyk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a7j1y"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(80, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_503xh"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(48, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lb2tp"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(0, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g0dyy"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(16, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wvr68"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(80, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5dmwg"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(64, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6bf5c"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(32, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2lyua"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(48, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yyiuh"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(112, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r5fd4"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(112, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_75vva"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(96, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hcbdd"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(0, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_en6ng"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(16, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sxvge"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(80, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l73d3"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(32, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3bskh"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(64, 224, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h38am"]
+atlas = ExtResource("2_tbmxl")
+region = Rect2(80, 224, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_i3wem"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a7j1y")
+}],
+"loop": true,
+"name": &"Crouch",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_503xh")
+}],
+"loop": true,
+"name": &"Fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lb2tp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lb2tp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lb2tp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lb2tp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g0dyy")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wvr68")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5dmwg")
+}],
+"loop": true,
+"name": &"Morph",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6bf5c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2lyua")
+}],
+"loop": true,
+"name": &"Roll",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yyiuh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r5fd4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_75vva")
+}],
+"loop": true,
+"name": &"Run",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hcbdd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_en6ng")
+}],
+"loop": true,
+"name": &"Shoot",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sxvge")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l73d3")
+}],
+"loop": true,
+"name": &"Swim",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3bskh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h38am")
+}],
+"loop": true,
+"name": &"Unmorph",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2r1l2"]
+size = Vector2(4, 10)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_c6tv4"]
+polygon = PackedVector2Array(-2, -10, -2, 2.08165e-12, 2, 2.08165e-12, 2, -10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_at2mb"]
+size = Vector2(5, 6)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o7l1g"]
+size = Vector2(2, 10)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_tiuq8")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -5)
+zoom = Vector2(10, 10)
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.1
+drag_right_margin = 0.1
+editor_draw_drag_margin = true
+
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+current = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_i3wem")
+animation = &"Roll"
+autoplay = "Idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_2r1l2")
+debug_color = Color(0, 0.635294, 0.403922, 0.419608)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_c6tv4")
+
+[node name="WaterDetector2D" parent="." instance=ExtResource("8_jo0ew")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WaterDetector2D"]
+position = Vector2(0, -7.5)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_at2mb")
+
+[node name="LadderDetector2D" parent="." instance=ExtResource("3_py7m2")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LadderDetector2D"]
+position = Vector2(4.76837e-07, -5)
+rotation = -3.14159
+shape = SubResource("RectangleShape2D_o7l1g")
+debug_color = Color(0.886275, 0.290196, 0.411765, 0.419608)
+
+[node name="PlayerState" type="Node" parent="." node_paths=PackedStringArray("_state")]
+script = ExtResource("2_uv754")
+_state = NodePath("PlayerIdle")
+
+[node name="PlayerIdle" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_fallState", "_runState", "_jumpState", "_climbState", "_crouchState")]
+script = ExtResource("3_fbuir")
+_body = NodePath("../..")
+_sprite = NodePath("../../AnimatedSprite2D")
+_ladderDetector = NodePath("../../LadderDetector2D")
+_fallState = NodePath("../PlayerFall")
+_runState = NodePath("../PlayerRun")
+_jumpState = NodePath("../PlayerJump")
+_climbState = NodePath("../PlayerClimb")
+_crouchState = NodePath("../PlayerCrouch")
+
+[node name="PlayerRun" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_idleState", "_fallState", "_jumpState", "_climbState", "_crouchState")]
+script = ExtResource("4_avsiq")
+_body = NodePath("../..")
+_sprite = NodePath("../../AnimatedSprite2D")
+_ladderDetector = NodePath("../../LadderDetector2D")
+_idleState = NodePath("../PlayerIdle")
+_fallState = NodePath("../PlayerFall")
+_jumpState = NodePath("../PlayerJump")
+_climbState = NodePath("../PlayerClimb")
+_crouchState = NodePath("../PlayerCrouch")
+
+[node name="PlayerFall" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_waterDetector", "_ladderDetector", "_airJumpState", "_landState", "_swimState", "_climbState")]
+script = ExtResource("6_2s1mb")
+_body = NodePath("../..")
+_sprite = NodePath("../../AnimatedSprite2D")
+_waterDetector = NodePath("../../WaterDetector2D")
+_ladderDetector = NodePath("../../LadderDetector2D")
+_airJumpState = NodePath("../PlayerAirJump")
+_landState = NodePath("../PlayerLand")
+_swimState = NodePath("../PlayerSwim")
+_climbState = NodePath("../PlayerClimb")
+
+[node name="PlayerJump" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallState")]
+script = ExtResource("5_h1xfj")
+_body = NodePath("../..")
+_jumpEffect = NodePath("../../SoundEffects/PlayerJumpEffect")
+_fallState = NodePath("../PlayerFall")
+
+[node name="PlayerAirJump" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallState")]
+script = ExtResource("5_h1xfj")
+_body = NodePath("../..")
+_jumpEffect = NodePath("../../SoundEffects/PlayerAirJumpEffect")
+_velocity = 70.0
+_fallState = NodePath("../PlayerFall")
+
+[node name="PlayerLand" type="Node" parent="PlayerState" node_paths=PackedStringArray("_landEffect", "_runState", "_crouchState", "_idleState")]
+script = ExtResource("10_u0lcc")
+_landEffect = NodePath("../../SoundEffects/PlayerLandEffect")
+_runState = NodePath("../PlayerRun")
+_crouchState = NodePath("../PlayerCrouch")
+_idleState = NodePath("../PlayerIdle")
+
+[node name="PlayerSwim" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_waterDetector", "_splashEffect", "_fallState")]
+script = ExtResource("7_86bux")
+_body = NodePath("../..")
+_sprite = NodePath("../../AnimatedSprite2D")
+_waterDetector = NodePath("../../WaterDetector2D")
+_splashEffect = NodePath("../../SoundEffects/PlayerSplashEffect")
+_fallState = NodePath("../PlayerFall")
+
+[node name="PlayerClimb" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_fallState", "_jumpState", "_idleState")]
+script = ExtResource("10_yfb2l")
+_body = NodePath("../..")
+_sprite = NodePath("../../AnimatedSprite2D")
+_ladderDetector = NodePath("../../LadderDetector2D")
+_fallState = NodePath("../PlayerFall")
+_jumpState = NodePath("../PlayerJump")
+_idleState = NodePath("../PlayerIdle")
+
+[node name="PlayerCrouch" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_fallState", "_jumpState", "_idleState", "_rollState")]
+script = ExtResource("12_x8xw6")
+_body = NodePath("../..")
+_collider = NodePath("../../CollisionShape2D")
+_sprite = NodePath("../../AnimatedSprite2D")
+_fallState = NodePath("../PlayerFall")
+_jumpState = NodePath("../PlayerJump")
+_idleState = NodePath("../PlayerIdle")
+_rollState = NodePath("../PlayerRoll")
+
+[node name="PlayerRoll" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_crouchState", "_fallState")]
+script = ExtResource("13_talav")
+_body = NodePath("../..")
+_collider = NodePath("../../CollisionShape2D")
+_sprite = NodePath("../../AnimatedSprite2D")
+_crouchState = NodePath("../PlayerCrouch")
+_fallState = NodePath("../PlayerFall")
+
+[node name="SoundEffects" type="Node2D" parent="."]
+
+[node name="PlayerJumpEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("9_5n4l8")
+
+[node name="PlayerAirJumpEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("15_yjmct")
+
+[node name="PlayerLandEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("11_m68mo")
+
+[node name="PlayerSplashEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("17_nlsyk")
+volume_db = -5.0
