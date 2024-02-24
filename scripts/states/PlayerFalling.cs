@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerFall : State
+public partial class PlayerFalling : State
 {
     [Export]
     private CharacterBody2D _body;
@@ -8,32 +8,44 @@ public partial class PlayerFall : State
     [Export]
     private AnimatedSprite2D _sprite;
 
+    [ExportGroup("Falling")]
     [Export]
-    private float _fallAcceleration = 300;
+    private float _gravity = 300;
 
     [Export]
     private float _terminalVelocity = 100;
 
+    [ExportGroup("Moving")]
     [Export]
-    private float _moveVelocity = 50;
+    private float _maximumVelocity = 50;
+
+    [Export]
+    private float _traction = 600;
+
+    [Export]
+    private float _friction = 400;
+
+    [ExportGroup("Jumping")]
+    [Export]
+    private State _airJumpingState;
 
     [Export]
     private int _airJumps = 1;
 
+    [ExportGroup("Landing")]
     [Export]
-    private State _airJumpState;
+    private State _landingState;
 
+    [ExportGroup("Swimming")]
     [Export]
-    private State _landState;
-
-    [Export]
-    private State _swimState;
+    private State _swimmingState;
 
     [Export]
     private TileDetector2D _waterDetector;
 
+    [ExportGroup("Climbing")]
     [Export]
-    private State _climbState;
+    private State _climbingState;
 
     [Export]
     private TileDetector2D _ladderDetector;
@@ -58,16 +70,16 @@ public partial class PlayerFall : State
                 when Input.IsActionJustPressed("Jump")
                     && _airJumpsRemaining > 0:
                 _airJumpsRemaining--;
-                Transition(_airJumpState);
+                Transition(_airJumpingState);
                 break;
 
             case true when _body.IsOnFloor():
                 _airJumpsRemaining = _airJumps;
-                Transition(_landState);
+                Transition(_landingState);
                 break;
 
             case true when _waterDetector.IsOverlapping:
-                Transition(_swimState);
+                Transition(_swimmingState);
                 break;
 
             case true
@@ -76,12 +88,12 @@ public partial class PlayerFall : State
                         Input.IsActionPressed("MoveUp")
                         || Input.IsActionPressed("MoveDown")
                     ):
-                Transition(_climbState);
+                Transition(_climbingState);
                 break;
 
             default:
                 Fall(delta);
-                Move();
+                Move(delta);
                 break;
         }
     }
@@ -91,31 +103,42 @@ public partial class PlayerFall : State
         _body.Velocity = new Vector2(
             _body.Velocity.X,
             Mathf.Min(
-                _body.Velocity.Y + (_fallAcceleration * (float)delta),
+                _body.Velocity.Y + (_gravity * (float)delta),
                 _terminalVelocity
             )
         );
     }
 
-    private void Move()
+    private void Move(double delta)
     {
-        float x = Input.GetAxis("MoveLeft", "MoveRight");
+        float input = Input.GetAxis("MoveLeft", "MoveRight");
 
-        if (x == 0)
-        {
-            _body.Velocity = new Vector2(
-                Mathf.MoveToward(_body.Velocity.X, 0, _moveVelocity),
-                _body.Velocity.Y
-            );
-        }
+        if (input == 0)
+            Decelerate(delta);
         else
-        {
-            _body.Velocity = new Vector2(x * _moveVelocity, _body.Velocity.Y);
+            Accelerate(input, delta);
 
-            if (x > 0)
-                _sprite.FlipH = true;
-            if (x < 0)
-                _sprite.FlipH = false;
+        _sprite.SpeedScale = Mathf.Abs(input);
+    }
+
+    private void Decelerate(double delta)
+    {
+        _body.Velocity = new Vector2(
+            Mathf.MoveToward(_body.Velocity.X, 0, _friction * (float)delta),
+            _body.Velocity.Y
+        );
+    }
+
+    private void Accelerate(float input, double delta)
+    {
+        _sprite.FlipH = input > 0;
+
+        if (
+            (input < 0 && _body.Velocity.X > -_maximumVelocity)
+            || (input > 0 && _body.Velocity.X < _maximumVelocity)
+        )
+        {
+            _body.Velocity += new Vector2(input * _traction * (float)delta, 0);
         }
     }
 }

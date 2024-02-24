@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerClimb : State
+public partial class PlayerClimbing : State
 {
     [Export]
     private CharacterBody2D _body;
@@ -18,13 +18,13 @@ public partial class PlayerClimb : State
     private float _leapVelocity = 40;
 
     [Export]
-    private State _fallState;
+    private State _fallingState;
 
     [Export]
-    private State _jumpState;
+    private State _jumpingState;
 
     [Export]
-    private State _idleState;
+    private State _standingState;
 
     public override void Enter()
     {
@@ -47,7 +47,7 @@ public partial class PlayerClimb : State
             );
         }
 
-        Transition(_fallState);
+        Transition(_fallingState);
     }
 
     public override void UpdatePhysics(double delta)
@@ -56,15 +56,15 @@ public partial class PlayerClimb : State
         {
             case true
                 when _body.IsOnFloor() && Input.IsActionPressed("MoveDown"):
-                Transition(_idleState);
+                Transition(_standingState);
                 return;
 
             case true when Input.IsActionJustPressed("Jump"):
-                Transition(_jumpState);
+                Transition(_jumpingState);
                 return;
 
             case true when Input.IsActionJustPressed("Cancel"):
-                Transition(_fallState);
+                Transition(_fallingState);
                 return;
         }
 

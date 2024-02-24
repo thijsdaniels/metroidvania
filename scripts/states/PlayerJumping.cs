@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerJump : State
+public partial class PlayerJumping : State
 {
     [Export]
     private CharacterBody2D _body;
@@ -12,7 +12,7 @@ public partial class PlayerJump : State
     private float _velocity = 100;
 
     [Export]
-    private State _fallState;
+    private State _fallingState;
 
     public override void Enter()
     {
@@ -20,7 +20,7 @@ public partial class PlayerJump : State
 
         /// @todo Stay in the Jump state until the player is at the apex of the
         /// jump.
-        Transition(_fallState);
+        Transition(_fallingState);
     }
 
     private void Jump()

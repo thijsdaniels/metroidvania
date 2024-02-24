@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerSwim : State
+public partial class PlayerSwimming : State
 {
     [Export]
     private CharacterBody2D _body;
@@ -24,7 +24,7 @@ public partial class PlayerSwim : State
     private AudioStreamPlayer2D _splashEffect;
 
     [Export]
-    private State _fallState;
+    private State _fallingState;
 
     public override void Enter()
     {
@@ -50,7 +50,7 @@ public partial class PlayerSwim : State
             );
         }
 
-        Transition(_fallState);
+        Transition(_fallingState);
     }
 
     public override void UpdatePhysics(double delta)

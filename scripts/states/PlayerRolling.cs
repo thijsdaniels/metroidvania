@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerRoll : State
+public partial class PlayerRolling : State
 {
     [Export]
     private CharacterBody2D _body;
@@ -12,16 +12,22 @@ public partial class PlayerRoll : State
     private AnimatedSprite2D _sprite;
 
     [Export]
-    private float _velocity = 90;
+    private float _maximumVelocity = 90;
+
+    [Export]
+    private float _traction = 700;
+
+    [Export]
+    private float _friction = 200;
 
     [Export]
     private int _colliderRadius = 2;
 
     [Export]
-    private State _crouchState;
+    private State _crouchingState;
 
     [Export]
-    private State _fallState;
+    private State _fallingState;
 
     private Vector2 _oldColliderPosition;
 
@@ -46,16 +52,16 @@ public partial class PlayerRoll : State
         switch (true)
         {
             case true when Input.IsActionJustPressed("MoveUp"):
-                Transition(_crouchState);
+                Transition(_crouchingState);
                 break;
 
             // @todo Transition to `PlayerMorphFall` state instead.
             case true when !_body.IsOnFloor():
-                Transition(_fallState);
+                Transition(_fallingState);
                 break;
 
             default:
-                Roll();
+                Roll(delta);
                 break;
         }
     }
@@ -76,27 +82,36 @@ public partial class PlayerRoll : State
         _collider.Shape = _oldColliderShape;
     }
 
-    private void Roll()
+    private void Roll(double delta)
     {
-        float x = Input.GetAxis("MoveLeft", "MoveRight");
+        float input = Input.GetAxis("MoveLeft", "MoveRight");
 
-        if (x == 0)
-        {
-            _body.Velocity = new Vector2(
-                Mathf.MoveToward(_body.Velocity.X, 0, _velocity),
-                _body.Velocity.Y
-            );
-        }
+        if (input == 0)
+            Decelerate(delta);
         else
+            Accelerate(input, delta);
+
+        _sprite.SpeedScale = Mathf.Abs(input);
+    }
+
+    private void Decelerate(double delta)
+    {
+        _body.Velocity = new Vector2(
+            Mathf.MoveToward(_body.Velocity.X, 0, _friction * (float)delta),
+            _body.Velocity.Y
+        );
+    }
+
+    private void Accelerate(float input, double delta)
+    {
+        _sprite.FlipH = input > 0;
+
+        if (
+            (input < 0 && _body.Velocity.X > -_maximumVelocity)
+            || (input > 0 && _body.Velocity.X < _maximumVelocity)
+        )
         {
-            _body.Velocity = new Vector2(x * _velocity, _body.Velocity.Y);
-
-            if (x > 0)
-                _sprite.FlipH = true;
-            if (x < 0)
-                _sprite.FlipH = false;
+            _body.Velocity += new Vector2(input * _traction * (float)delta, 0);
         }
-
-        _sprite.SpeedScale = Mathf.Abs(x);
     }
 }

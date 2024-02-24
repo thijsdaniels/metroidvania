@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerIdle : State
+public partial class PlayerStanding : State
 {
     [Export]
     private CharacterBody2D _body;
@@ -8,23 +8,33 @@ public partial class PlayerIdle : State
     [Export]
     private AnimatedSprite2D _sprite;
 
+    [ExportGroup("Standing")]
+    // @todo Get this value from tile metadata.
+    [Export]
+    private float _friction = 500;
+
+    [ExportGroup("Climbing")]
+    [Export]
+    private State _climbingState;
+
     [Export]
     private TileDetector2D _ladderDetector;
 
+    [ExportGroup("Falling")]
     [Export]
-    private State _fallState;
+    private State _fallingState;
 
+    [ExportGroup("Running")]
     [Export]
-    private State _runState;
+    private State _runningState;
 
+    [ExportGroup("Jumping")]
     [Export]
-    private State _jumpState;
+    private State _jumpingState;
 
+    [ExportGroup("Crouching")]
     [Export]
-    private State _climbState;
-
-    [Export]
-    private State _crouchState;
+    private State _crouchingState;
 
     public override void Enter()
     {
@@ -36,27 +46,27 @@ public partial class PlayerIdle : State
         switch (true)
         {
             case true when !_body.IsOnFloor():
-                Transition(_fallState);
+                Transition(_fallingState);
                 break;
 
             case true
                 when Input.IsActionPressed("MoveLeft")
                     || Input.IsActionPressed("MoveRight"):
-                Transition(_runState);
+                Transition(_runningState);
                 break;
 
             case true when Input.IsActionJustPressed("Jump"):
-                Transition(_jumpState);
+                Transition(_jumpingState);
                 break;
 
             case true
                 when _ladderDetector.IsOverlapping
                     && Input.IsActionPressed("MoveUp"):
-                Transition(_climbState);
+                Transition(_climbingState);
                 break;
 
             case true when Input.IsActionJustPressed("MoveDown"):
-                Transition(_crouchState);
+                Transition(_crouchingState);
                 break;
 
             // case true when Input.IsActionJustPressed("Attack"):
@@ -66,6 +76,18 @@ public partial class PlayerIdle : State
             // case true when Input.IsActionJustPressed("Interact"):
             //     Transition(_interactState);
             //     break;}
+
+            default:
+                Stand();
+                break;
+        }
+
+        void Stand()
+        {
+            _body.Velocity = new Vector2(
+                Mathf.MoveToward(_body.Velocity.X, 0, _friction * (float)delta),
+                _body.Velocity.Y
+            );
         }
     }
 }

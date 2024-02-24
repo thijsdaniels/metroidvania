@@ -3,19 +3,19 @@
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_tiuq8"]
 [ext_resource type="Texture2D" uid="uid://cxm67ae15llvy" path="res://assets/textures/MinimalMetroidvaniaCharacters.png" id="2_tbmxl"]
 [ext_resource type="Script" path="res://scripts/FiniteStateMachine.cs" id="2_uv754"]
-[ext_resource type="Script" path="res://scripts/states/PlayerIdle.cs" id="3_fbuir"]
 [ext_resource type="PackedScene" uid="uid://cc8aulwq35g2o" path="res://scenes/LadderDetector2D.tscn" id="3_py7m2"]
-[ext_resource type="Script" path="res://scripts/states/PlayerRun.cs" id="4_avsiq"]
-[ext_resource type="Script" path="res://scripts/states/PlayerJump.cs" id="5_h1xfj"]
-[ext_resource type="Script" path="res://scripts/states/PlayerFall.cs" id="6_2s1mb"]
-[ext_resource type="Script" path="res://scripts/states/PlayerSwim.cs" id="7_86bux"]
+[ext_resource type="Script" path="res://scripts/states/PlayerStanding.cs" id="6_42x5w"]
+[ext_resource type="Script" path="res://scripts/states/PlayerRunning.cs" id="7_6bc5y"]
+[ext_resource type="Script" path="res://scripts/states/PlayerFalling.cs" id="8_bl4yi"]
 [ext_resource type="PackedScene" uid="uid://bqfrngjwqnade" path="res://scenes/WaterDetector2D.tscn" id="8_jo0ew"]
 [ext_resource type="AudioStream" uid="uid://cem8sdgg8mh6q" path="res://assets/audio/effects/playerJump.wav" id="9_5n4l8"]
-[ext_resource type="Script" path="res://scripts/states/PlayerLand.cs" id="10_u0lcc"]
-[ext_resource type="Script" path="res://scripts/states/PlayerClimb.cs" id="10_yfb2l"]
+[ext_resource type="Script" path="res://scripts/states/PlayerJumping.cs" id="9_fb7lo"]
+[ext_resource type="Script" path="res://scripts/states/PlayerLanding.cs" id="10_af6b7"]
+[ext_resource type="Script" path="res://scripts/states/PlayerSwimming.cs" id="11_elb0q"]
 [ext_resource type="AudioStream" uid="uid://5gl8d08wn02m" path="res://assets/audio/effects/playerLand.wav" id="11_m68mo"]
-[ext_resource type="Script" path="res://scripts/states/PlayerCrouch.cs" id="12_x8xw6"]
-[ext_resource type="Script" path="res://scripts/states/PlayerRoll.cs" id="13_talav"]
+[ext_resource type="Script" path="res://scripts/states/PlayerClimbing.cs" id="12_wd0ou"]
+[ext_resource type="Script" path="res://scripts/states/PlayerCrouching.cs" id="13_n33vl"]
+[ext_resource type="Script" path="res://scripts/states/PlayerRolling.cs" id="14_w2iv3"]
 [ext_resource type="AudioStream" uid="uid://qxpiwxrt7ow5" path="res://assets/audio/effects/playerAirJump.wav" id="15_yjmct"]
 [ext_resource type="AudioStream" uid="uid://bejdegdgy1bsn" path="res://assets/audio/effects/doorOpen.wav" id="17_nlsyk"]
 
@@ -254,97 +254,98 @@ rotation = -3.14159
 shape = SubResource("RectangleShape2D_o7l1g")
 debug_color = Color(0.886275, 0.290196, 0.411765, 0.419608)
 
-[node name="PlayerState" type="Node" parent="." node_paths=PackedStringArray("_state")]
+[node name="State" type="Node" parent="." node_paths=PackedStringArray("_state")]
 script = ExtResource("2_uv754")
-_state = NodePath("PlayerIdle")
+_state = NodePath("Standing")
 
-[node name="PlayerIdle" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_fallState", "_runState", "_jumpState", "_climbState", "_crouchState")]
-script = ExtResource("3_fbuir")
+[node name="Standing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_climbingState", "_ladderDetector", "_fallingState", "_runningState", "_jumpingState", "_crouchingState")]
+script = ExtResource("6_42x5w")
+_body = NodePath("../..")
+_sprite = NodePath("../../AnimatedSprite2D")
+_climbingState = NodePath("../Climbing")
+_ladderDetector = NodePath("../../LadderDetector2D")
+_fallingState = NodePath("../Falling")
+_runningState = NodePath("../Running")
+_jumpingState = NodePath("../Jumping")
+_crouchingState = NodePath("../Crouching")
+
+[node name="Running" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_standingState", "_fallingState", "_jumpingState", "_climbingState", "_crouchingState")]
+script = ExtResource("7_6bc5y")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _ladderDetector = NodePath("../../LadderDetector2D")
-_fallState = NodePath("../PlayerFall")
-_runState = NodePath("../PlayerRun")
-_jumpState = NodePath("../PlayerJump")
-_climbState = NodePath("../PlayerClimb")
-_crouchState = NodePath("../PlayerCrouch")
+_standingState = NodePath("../Standing")
+_fallingState = NodePath("../Falling")
+_jumpingState = NodePath("../Jumping")
+_climbingState = NodePath("../Climbing")
+_crouchingState = NodePath("../Crouching")
 
-[node name="PlayerRun" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_idleState", "_fallState", "_jumpState", "_climbState", "_crouchState")]
-script = ExtResource("4_avsiq")
+[node name="Falling" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_airJumpingState", "_landingState", "_swimmingState", "_waterDetector", "_climbingState", "_ladderDetector")]
+script = ExtResource("8_bl4yi")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
-_ladderDetector = NodePath("../../LadderDetector2D")
-_idleState = NodePath("../PlayerIdle")
-_fallState = NodePath("../PlayerFall")
-_jumpState = NodePath("../PlayerJump")
-_climbState = NodePath("../PlayerClimb")
-_crouchState = NodePath("../PlayerCrouch")
-
-[node name="PlayerFall" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_waterDetector", "_ladderDetector", "_airJumpState", "_landState", "_swimState", "_climbState")]
-script = ExtResource("6_2s1mb")
-_body = NodePath("../..")
-_sprite = NodePath("../../AnimatedSprite2D")
+_airJumpingState = NodePath("../AirJumping")
+_landingState = NodePath("../Landing")
+_swimmingState = NodePath("../Swimming")
 _waterDetector = NodePath("../../WaterDetector2D")
+_climbingState = NodePath("../Climbing")
 _ladderDetector = NodePath("../../LadderDetector2D")
-_airJumpState = NodePath("../PlayerAirJump")
-_landState = NodePath("../PlayerLand")
-_swimState = NodePath("../PlayerSwim")
-_climbState = NodePath("../PlayerClimb")
 
-[node name="PlayerJump" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallState")]
-script = ExtResource("5_h1xfj")
+[node name="Jumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallingState")]
+script = ExtResource("9_fb7lo")
 _body = NodePath("../..")
 _jumpEffect = NodePath("../../SoundEffects/PlayerJumpEffect")
-_fallState = NodePath("../PlayerFall")
+_fallingState = NodePath("../Falling")
 
-[node name="PlayerAirJump" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallState")]
-script = ExtResource("5_h1xfj")
+[node name="AirJumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallingState")]
+script = ExtResource("9_fb7lo")
 _body = NodePath("../..")
 _jumpEffect = NodePath("../../SoundEffects/PlayerAirJumpEffect")
-_velocity = 70.0
-_fallState = NodePath("../PlayerFall")
+_velocity = 90.0
+_fallingState = NodePath("../Falling")
 
-[node name="PlayerLand" type="Node" parent="PlayerState" node_paths=PackedStringArray("_landEffect", "_runState", "_crouchState", "_idleState")]
-script = ExtResource("10_u0lcc")
+[node name="Landing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_landEffect", "_runningState", "_crouchingState", "_standingState")]
+script = ExtResource("10_af6b7")
+_body = NodePath("../..")
 _landEffect = NodePath("../../SoundEffects/PlayerLandEffect")
-_runState = NodePath("../PlayerRun")
-_crouchState = NodePath("../PlayerCrouch")
-_idleState = NodePath("../PlayerIdle")
+_runningState = NodePath("../Running")
+_crouchingState = NodePath("../Crouching")
+_standingState = NodePath("../Standing")
 
-[node name="PlayerSwim" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_waterDetector", "_splashEffect", "_fallState")]
-script = ExtResource("7_86bux")
+[node name="Swimming" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_waterDetector", "_splashEffect", "_fallingState")]
+script = ExtResource("11_elb0q")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _waterDetector = NodePath("../../WaterDetector2D")
 _splashEffect = NodePath("../../SoundEffects/PlayerSplashEffect")
-_fallState = NodePath("../PlayerFall")
+_fallingState = NodePath("../Falling")
 
-[node name="PlayerClimb" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_fallState", "_jumpState", "_idleState")]
-script = ExtResource("10_yfb2l")
+[node name="Climbing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_fallingState", "_jumpingState", "_standingState")]
+script = ExtResource("12_wd0ou")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _ladderDetector = NodePath("../../LadderDetector2D")
-_fallState = NodePath("../PlayerFall")
-_jumpState = NodePath("../PlayerJump")
-_idleState = NodePath("../PlayerIdle")
+_fallingState = NodePath("../Falling")
+_jumpingState = NodePath("../Jumping")
+_standingState = NodePath("../Standing")
 
-[node name="PlayerCrouch" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_fallState", "_jumpState", "_idleState", "_rollState")]
-script = ExtResource("12_x8xw6")
+[node name="Crouching" type="Node" parent="State" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_fallingState", "_jumpingState", "_standingState", "_rollingState")]
+script = ExtResource("13_n33vl")
 _body = NodePath("../..")
 _collider = NodePath("../../CollisionShape2D")
 _sprite = NodePath("../../AnimatedSprite2D")
-_fallState = NodePath("../PlayerFall")
-_jumpState = NodePath("../PlayerJump")
-_idleState = NodePath("../PlayerIdle")
-_rollState = NodePath("../PlayerRoll")
+_fallingState = NodePath("../Falling")
+_jumpingState = NodePath("../Jumping")
+_standingState = NodePath("../Standing")
+_rollingState = NodePath("../Rolling")
 
-[node name="PlayerRoll" type="Node" parent="PlayerState" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_crouchState", "_fallState")]
-script = ExtResource("13_talav")
+[node name="Rolling" type="Node" parent="State" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_crouchingState", "_fallingState")]
+script = ExtResource("14_w2iv3")
 _body = NodePath("../..")
 _collider = NodePath("../../CollisionShape2D")
 _sprite = NodePath("../../AnimatedSprite2D")
-_crouchState = NodePath("../PlayerCrouch")
-_fallState = NodePath("../PlayerFall")
+_crouchingState = NodePath("../Crouching")
+_fallingState = NodePath("../Falling")
 
 [node name="SoundEffects" type="Node2D" parent="."]
 

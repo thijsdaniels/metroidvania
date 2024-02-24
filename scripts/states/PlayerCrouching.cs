@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerCrouch : State
+public partial class PlayerCrouching : State
 {
     [Export]
     private CharacterBody2D _body;
@@ -18,16 +18,16 @@ public partial class PlayerCrouch : State
     private float _velocity = 20;
 
     [Export]
-    private State _fallState;
+    private State _fallingState;
 
     [Export]
-    private State _jumpState;
+    private State _jumpingState;
 
     [Export]
-    private State _idleState;
+    private State _standingState;
 
     [Export]
-    private State _rollState;
+    private State _rollingState;
 
     private Vector2 _oldColliderPosition;
 
@@ -50,19 +50,19 @@ public partial class PlayerCrouch : State
         switch (true)
         {
             case true when !_body.IsOnFloor():
-                Transition(_fallState);
+                Transition(_fallingState);
                 break;
 
             case true when Input.IsActionJustPressed("MoveUp"):
-                Transition(_idleState);
+                Transition(_standingState);
                 break;
 
             case true when Input.IsActionJustPressed("Jump"):
-                Transition(_jumpState);
+                Transition(_jumpingState);
                 break;
 
             case true when Input.IsActionJustPressed("MoveDown"):
-                Transition(_rollState);
+                Transition(_rollingState);
                 break;
 
             default:
