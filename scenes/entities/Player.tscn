@@ -3,21 +3,21 @@
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_tiuq8"]
 [ext_resource type="Texture2D" uid="uid://cxm67ae15llvy" path="res://assets/textures/MinimalMetroidvaniaCharacters.png" id="2_tbmxl"]
 [ext_resource type="Script" path="res://scripts/FiniteStateMachine.cs" id="2_uv754"]
-[ext_resource type="PackedScene" uid="uid://cc8aulwq35g2o" path="res://scenes/LadderDetector2D.tscn" id="3_py7m2"]
+[ext_resource type="PackedScene" uid="uid://cc8aulwq35g2o" path="res://scenes/utilities/LadderDetector2D.tscn" id="3_py7m2"]
 [ext_resource type="Script" path="res://scripts/states/PlayerStanding.cs" id="6_42x5w"]
 [ext_resource type="Script" path="res://scripts/states/PlayerRunning.cs" id="7_6bc5y"]
 [ext_resource type="Script" path="res://scripts/states/PlayerFalling.cs" id="8_bl4yi"]
-[ext_resource type="PackedScene" uid="uid://bqfrngjwqnade" path="res://scenes/WaterDetector2D.tscn" id="8_jo0ew"]
-[ext_resource type="AudioStream" uid="uid://cem8sdgg8mh6q" path="res://assets/audio/effects/playerJump.wav" id="9_5n4l8"]
+[ext_resource type="PackedScene" uid="uid://bqfrngjwqnade" path="res://scenes/utilities/WaterDetector2D.tscn" id="8_jo0ew"]
+[ext_resource type="AudioStream" uid="uid://cem8sdgg8mh6q" path="res://assets/sounds/effects/playerJump.wav" id="9_5n4l8"]
 [ext_resource type="Script" path="res://scripts/states/PlayerJumping.cs" id="9_fb7lo"]
 [ext_resource type="Script" path="res://scripts/states/PlayerLanding.cs" id="10_af6b7"]
 [ext_resource type="Script" path="res://scripts/states/PlayerSwimming.cs" id="11_elb0q"]
-[ext_resource type="AudioStream" uid="uid://5gl8d08wn02m" path="res://assets/audio/effects/playerLand.wav" id="11_m68mo"]
+[ext_resource type="AudioStream" uid="uid://5gl8d08wn02m" path="res://assets/sounds/effects/playerLand.wav" id="11_m68mo"]
 [ext_resource type="Script" path="res://scripts/states/PlayerClimbing.cs" id="12_wd0ou"]
 [ext_resource type="Script" path="res://scripts/states/PlayerCrouching.cs" id="13_n33vl"]
 [ext_resource type="Script" path="res://scripts/states/PlayerRolling.cs" id="14_w2iv3"]
-[ext_resource type="AudioStream" uid="uid://qxpiwxrt7ow5" path="res://assets/audio/effects/playerAirJump.wav" id="15_yjmct"]
-[ext_resource type="AudioStream" uid="uid://bejdegdgy1bsn" path="res://assets/audio/effects/doorOpen.wav" id="17_nlsyk"]
+[ext_resource type="AudioStream" uid="uid://qxpiwxrt7ow5" path="res://assets/sounds/effects/playerAirJump.wav" id="15_yjmct"]
+[ext_resource type="AudioStream" uid="uid://bejdegdgy1bsn" path="res://assets/sounds/effects/doorOpen.wav" id="17_nlsyk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a7j1y"]
 atlas = ExtResource("2_tbmxl")
@@ -301,7 +301,7 @@ _fallingState = NodePath("../Falling")
 script = ExtResource("9_fb7lo")
 _body = NodePath("../..")
 _jumpEffect = NodePath("../../SoundEffects/PlayerAirJumpEffect")
-_velocity = 90.0
+_velocity = 110.0
 _fallingState = NodePath("../Falling")
 
 [node name="Landing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_landEffect", "_runningState", "_crouchingState", "_standingState")]
