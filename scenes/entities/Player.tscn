@@ -1,21 +1,21 @@
 [gd_scene load_steps=41 format=3 uid="uid://cj6jt7wugt5b7"]
 
-[ext_resource type="Script" path="res://scripts/Player.cs" id="1_tiuq8"]
+[ext_resource type="Script" path="res://scripts/entities/player/Player.cs" id="1_tiuq8"]
 [ext_resource type="Texture2D" uid="uid://cxm67ae15llvy" path="res://assets/textures/MinimalMetroidvaniaCharacters.png" id="2_tbmxl"]
-[ext_resource type="Script" path="res://scripts/FiniteStateMachine.cs" id="2_uv754"]
+[ext_resource type="Script" path="res://scripts/utilities/FiniteStateMachine.cs" id="2_uv754"]
 [ext_resource type="PackedScene" uid="uid://cc8aulwq35g2o" path="res://scenes/utilities/LadderDetector2D.tscn" id="3_py7m2"]
-[ext_resource type="Script" path="res://scripts/states/PlayerStanding.cs" id="6_42x5w"]
-[ext_resource type="Script" path="res://scripts/states/PlayerRunning.cs" id="7_6bc5y"]
-[ext_resource type="Script" path="res://scripts/states/PlayerFalling.cs" id="8_bl4yi"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerStanding.cs" id="6_wk3pc"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerRunning.cs" id="7_iaxy0"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerFalling.cs" id="8_032je"]
 [ext_resource type="PackedScene" uid="uid://bqfrngjwqnade" path="res://scenes/utilities/WaterDetector2D.tscn" id="8_jo0ew"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerJumping.cs" id="9_2uq2y"]
 [ext_resource type="AudioStream" uid="uid://cem8sdgg8mh6q" path="res://assets/sounds/effects/playerJump.wav" id="9_5n4l8"]
-[ext_resource type="Script" path="res://scripts/states/PlayerJumping.cs" id="9_fb7lo"]
-[ext_resource type="Script" path="res://scripts/states/PlayerLanding.cs" id="10_af6b7"]
-[ext_resource type="Script" path="res://scripts/states/PlayerSwimming.cs" id="11_elb0q"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerLanding.cs" id="10_h3b2y"]
 [ext_resource type="AudioStream" uid="uid://5gl8d08wn02m" path="res://assets/sounds/effects/playerLand.wav" id="11_m68mo"]
-[ext_resource type="Script" path="res://scripts/states/PlayerClimbing.cs" id="12_wd0ou"]
-[ext_resource type="Script" path="res://scripts/states/PlayerCrouching.cs" id="13_n33vl"]
-[ext_resource type="Script" path="res://scripts/states/PlayerRolling.cs" id="14_w2iv3"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerSwimming.cs" id="11_mv1iq"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerClimbing.cs" id="12_g7a83"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerCrouching.cs" id="13_naaj6"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerRolling.cs" id="14_pvtrv"]
 [ext_resource type="AudioStream" uid="uid://qxpiwxrt7ow5" path="res://assets/sounds/effects/playerAirJump.wav" id="15_yjmct"]
 [ext_resource type="AudioStream" uid="uid://bejdegdgy1bsn" path="res://assets/sounds/effects/doorOpen.wav" id="17_nlsyk"]
 
@@ -259,7 +259,7 @@ script = ExtResource("2_uv754")
 _state = NodePath("Standing")
 
 [node name="Standing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_climbingState", "_ladderDetector", "_fallingState", "_runningState", "_jumpingState", "_crouchingState")]
-script = ExtResource("6_42x5w")
+script = ExtResource("6_wk3pc")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _climbingState = NodePath("../Climbing")
@@ -270,7 +270,7 @@ _jumpingState = NodePath("../Jumping")
 _crouchingState = NodePath("../Crouching")
 
 [node name="Running" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_standingState", "_fallingState", "_jumpingState", "_climbingState", "_ladderDetector", "_crouchingState")]
-script = ExtResource("7_6bc5y")
+script = ExtResource("7_iaxy0")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _standingState = NodePath("../Standing")
@@ -281,7 +281,7 @@ _ladderDetector = NodePath("../../LadderDetector2D")
 _crouchingState = NodePath("../Crouching")
 
 [node name="Falling" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_airJumpingState", "_landingState", "_swimmingState", "_waterDetector", "_climbingState", "_ladderDetector")]
-script = ExtResource("8_bl4yi")
+script = ExtResource("8_032je")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _airJumpingState = NodePath("../AirJumping")
@@ -292,20 +292,20 @@ _climbingState = NodePath("../Climbing")
 _ladderDetector = NodePath("../../LadderDetector2D")
 
 [node name="Jumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_soundEffect", "_fallingState")]
-script = ExtResource("9_fb7lo")
+script = ExtResource("9_2uq2y")
 _body = NodePath("../..")
 _soundEffect = NodePath("../../SoundEffects/PlayerJumpEffect")
 _fallingState = NodePath("../Falling")
 
 [node name="AirJumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_soundEffect", "_fallingState")]
-script = ExtResource("9_fb7lo")
+script = ExtResource("9_2uq2y")
 _body = NodePath("../..")
 _soundEffect = NodePath("../../SoundEffects/PlayerAirJumpEffect")
 _velocity = 110.0
 _fallingState = NodePath("../Falling")
 
 [node name="Landing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_soundEffect", "_standingState", "_runningState", "_crouchingState")]
-script = ExtResource("10_af6b7")
+script = ExtResource("10_h3b2y")
 _body = NodePath("../..")
 _soundEffect = NodePath("../../SoundEffects/PlayerLandEffect")
 _standingState = NodePath("../Standing")
@@ -313,7 +313,7 @@ _runningState = NodePath("../Running")
 _crouchingState = NodePath("../Crouching")
 
 [node name="Swimming" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_waterDetector", "_splashEffect", "_fallingState")]
-script = ExtResource("11_elb0q")
+script = ExtResource("11_mv1iq")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _waterDetector = NodePath("../../WaterDetector2D")
@@ -321,7 +321,7 @@ _splashEffect = NodePath("../../SoundEffects/PlayerSplashEffect")
 _fallingState = NodePath("../Falling")
 
 [node name="Climbing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_fallingState", "_jumpingState", "_standingState")]
-script = ExtResource("12_wd0ou")
+script = ExtResource("12_g7a83")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _ladderDetector = NodePath("../../LadderDetector2D")
@@ -330,7 +330,7 @@ _jumpingState = NodePath("../Jumping")
 _standingState = NodePath("../Standing")
 
 [node name="Crouching" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_collider", "_fallingState", "_jumpingState", "_standingState", "_rollingState")]
-script = ExtResource("13_n33vl")
+script = ExtResource("13_naaj6")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _collider = NodePath("../../CollisionShape2D")
@@ -340,7 +340,7 @@ _standingState = NodePath("../Standing")
 _rollingState = NodePath("../Rolling")
 
 [node name="Rolling" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_collider", "_crouchingState", "_fallingState")]
-script = ExtResource("14_w2iv3")
+script = ExtResource("14_pvtrv")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _collider = NodePath("../../CollisionShape2D")

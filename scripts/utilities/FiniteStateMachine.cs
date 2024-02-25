@@ -21,7 +21,7 @@ public partial class FiniteStateMachine : Node
 
         string initialState = _state.Name ?? _states.First().Value.Name;
 
-        OnTransition(initialState);
+        EnterState(initialState);
     }
 
     public override void _Process(double delta)
@@ -49,7 +49,17 @@ public partial class FiniteStateMachine : Node
             );
         }
 
-        _state?.Exit();
+        ExitState();
+        EnterState(state);
+    }
+
+    public void ExitState()
+    {
+        _state.Exit();
+    }
+
+    public void EnterState(string state)
+    {
         _state = _states[state];
         _state.Enter();
     }
