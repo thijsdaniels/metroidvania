@@ -5,21 +5,25 @@ public partial class PlayerLanding : State
     [Export]
     private CharacterBody2D _body;
 
+    [ExportGroup("Landing")]
     [Export]
-    private AudioStreamPlayer2D _landEffect;
+    private AudioStreamPlayer2D _soundEffect;
 
-    [Export]
-    private State _runningState;
-
-    [Export]
-    private State _crouchingState;
-
+    [ExportGroup("Standing")]
     [Export]
     private State _standingState;
 
+    [ExportGroup("Running")]
+    [Export]
+    private State _runningState;
+
+    [ExportGroup("Crouching")]
+    [Export]
+    private State _crouchingState;
+
     public override void Enter()
     {
-        _landEffect.Play();
+        _soundEffect.Play();
 
         switch (true)
         {
@@ -27,7 +31,7 @@ public partial class PlayerLanding : State
                 Transition(_runningState);
                 break;
 
-            case true when Input.IsActionPressed("MoveDown"):
+            case true when Input.IsActionPressed(Controller.Down):
                 Transition(_crouchingState);
                 break;
 

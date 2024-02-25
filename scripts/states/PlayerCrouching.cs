@@ -6,37 +6,46 @@ public partial class PlayerCrouching : State
     private CharacterBody2D _body;
 
     [Export]
-    private CollisionShape2D _collider;
-
-    [Export]
     private AnimatedSprite2D _sprite;
+
+    [ExportGroup("Collision")]
+    [Export]
+    private CollisionShape2D _collider;
 
     [Export]
     private Vector2 _colliderSize = new(4, 8);
 
+    [ExportGroup("Movement")]
     [Export]
-    private float _velocity = 20;
+    private float _acceleration = 300;
 
+    [Export]
+    private float _deceleration = 200;
+
+    [Export]
+    private float _maximumVelocity = 30;
+
+    [ExportGroup("Falling")]
     [Export]
     private State _fallingState;
 
+    [ExportGroup("Jumping")]
     [Export]
     private State _jumpingState;
 
+    [ExportGroup("Standing")]
     [Export]
     private State _standingState;
 
+    [ExportGroup("Rolling")]
     [Export]
     private State _rollingState;
 
     private Vector2 _oldColliderPosition;
-
     private Shape2D _oldColliderShape;
 
     public override void Enter()
     {
-        _sprite.Play("Crouch");
-
         Crouch();
     }
 
@@ -45,34 +54,10 @@ public partial class PlayerCrouching : State
         Stand();
     }
 
-    public override void UpdatePhysics(double delta)
-    {
-        switch (true)
-        {
-            case true when !_body.IsOnFloor():
-                Transition(_fallingState);
-                break;
-
-            case true when Input.IsActionJustPressed("MoveUp"):
-                Transition(_standingState);
-                break;
-
-            case true when Input.IsActionJustPressed("Jump"):
-                Transition(_jumpingState);
-                break;
-
-            case true when Input.IsActionJustPressed("MoveDown"):
-                Transition(_rollingState);
-                break;
-
-            default:
-                CrouchWalk();
-                break;
-        }
-    }
-
     private void Crouch()
     {
+        _sprite.Play("Crouch");
+
         _oldColliderPosition = _collider.Position;
         _oldColliderShape = _collider.Shape;
 
@@ -87,27 +72,44 @@ public partial class PlayerCrouching : State
         _collider.Shape = _oldColliderShape;
     }
 
-    private void CrouchWalk()
+    public override void UpdatePhysics(double delta)
     {
-        float x = Input.GetAxis("MoveLeft", "MoveRight");
-
-        if (x == 0)
+        switch (true)
         {
-            _body.Velocity = new Vector2(
-                Mathf.MoveToward(_body.Velocity.X, 0, _velocity),
-                _body.Velocity.Y
-            );
-        }
-        else
-        {
-            _body.Velocity = new Vector2(x * _velocity, _body.Velocity.Y);
+            case true when !_body.IsOnFloor():
+                Transition(_fallingState);
+                break;
 
-            if (x > 0)
-                _sprite.FlipH = true;
-            if (x < 0)
-                _sprite.FlipH = false;
-        }
+            case true when Input.IsActionJustPressed(Controller.Up):
+                Transition(_standingState);
+                break;
 
-        _sprite.SpeedScale = Mathf.Abs(x);
+            case true when Input.IsActionJustPressed(Controller.A):
+                Transition(_jumpingState);
+                break;
+
+            case true when Input.IsActionJustPressed(Controller.Down):
+                Transition(_rollingState);
+                break;
+
+            default:
+                CrouchWalk(delta);
+                break;
+        }
+    }
+
+    private void CrouchWalk(double delta)
+    {
+        float direction = Controller.GetHorizontalDirection();
+
+        _body.Accelerate(
+            delta: delta,
+            direction: direction,
+            acceleration: _acceleration,
+            deceleration: _deceleration,
+            limit: _maximumVelocity
+        );
+
+        _sprite.SynchronizeAnimation(direction);
     }
 }

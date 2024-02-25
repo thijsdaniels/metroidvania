@@ -8,15 +8,23 @@ public partial class PlayerClimbing : State
     [Export]
     private AnimatedSprite2D _sprite;
 
+    [ExportGroup("Climbing")]
     [Export]
     private TileDetector2D _ladderDetector;
 
     [Export]
-    private float _climbVelocity = 50;
+    private Vector2 _climbVelocity = new(30, 40);
+
+    [Export]
+    private Vector2 _climbAcceleration = new(300, 400);
+
+    [Export]
+    private Vector2 _climbDeceleration = new(600, 800);
 
     [Export]
     private float _leapVelocity = 40;
 
+    [ExportGroup("Transitions")]
     [Export]
     private State _fallingState;
 
@@ -39,7 +47,7 @@ public partial class PlayerClimbing : State
 
     private void OnLadderExited()
     {
-        if (Input.IsActionPressed("MoveUp"))
+        if (Input.IsActionPressed(Controller.Up))
         {
             _body.Velocity = new Vector2(
                 _body.Velocity.X,
@@ -55,43 +63,35 @@ public partial class PlayerClimbing : State
         switch (true)
         {
             case true
-                when _body.IsOnFloor() && Input.IsActionPressed("MoveDown"):
+                when _body.IsOnFloor()
+                    && Input.IsActionPressed(Controller.Down):
                 Transition(_standingState);
                 return;
 
-            case true when Input.IsActionJustPressed("Jump"):
+            case true when Input.IsActionJustPressed(Controller.A):
                 Transition(_jumpingState);
                 return;
 
-            case true when Input.IsActionJustPressed("Cancel"):
+            case true when Input.IsActionJustPressed(Controller.B):
                 Transition(_fallingState);
                 return;
         }
 
-        Climb();
+        Climb(delta);
     }
 
-    private void Climb()
+    private void Climb(double delta)
     {
-        Vector2 direction = Input.GetVector(
-            "MoveLeft",
-            "MoveRight",
-            "MoveUp",
-            "MoveDown"
+        Vector2 direction = Controller.GetDirection();
+
+        _body.Accelerate(
+            delta: delta,
+            direction: direction,
+            acceleration: _climbAcceleration,
+            deceleration: _climbDeceleration,
+            limit: _climbVelocity
         );
 
-        if (direction == Vector2.Zero)
-        {
-            _body.Velocity = new Vector2(
-                Mathf.MoveToward(_body.Velocity.X, 0, _climbVelocity),
-                Mathf.MoveToward(_body.Velocity.Y, 0, _climbVelocity)
-            );
-        }
-        else
-        {
-            _body.Velocity = direction * _climbVelocity;
-        }
-
-        _sprite.SpeedScale = Mathf.Abs(direction.Length());
+        _sprite.SynchronizeAnimation(direction);
     }
 }

@@ -8,11 +8,6 @@ public partial class PlayerStanding : State
     [Export]
     private AnimatedSprite2D _sprite;
 
-    [ExportGroup("Standing")]
-    // @todo Get this value from tile metadata.
-    [Export]
-    private float _friction = 500;
-
     [ExportGroup("Climbing")]
     [Export]
     private State _climbingState;
@@ -49,45 +44,33 @@ public partial class PlayerStanding : State
                 Transition(_fallingState);
                 break;
 
-            case true
-                when Input.IsActionPressed("MoveLeft")
-                    || Input.IsActionPressed("MoveRight"):
+            case true when Controller.GetHorizontalDirection() != 0:
                 Transition(_runningState);
                 break;
 
-            case true when Input.IsActionJustPressed("Jump"):
+            // case true
+            //     when interactionDetector.IsOverlapping
+            //         && Input.IsActionJustPressed(Controller.A):
+            //     Transition(_interactingState);
+            //     break;
+
+            case true when Input.IsActionJustPressed(Controller.A):
                 Transition(_jumpingState);
                 break;
 
             case true
                 when _ladderDetector.IsOverlapping
-                    && Input.IsActionPressed("MoveUp"):
+                    && Input.IsActionPressed(Controller.Up):
                 Transition(_climbingState);
                 break;
 
-            case true when Input.IsActionJustPressed("MoveDown"):
+            case true when Input.IsActionJustPressed(Controller.Down):
                 Transition(_crouchingState);
                 break;
 
-            // case true when Input.IsActionJustPressed("Attack"):
-            //     Transition(_attackState);
+            // case true when Input.IsActionJustPressed(Controller.X):
+            //     Transition(_attackingState);
             //     break;
-
-            // case true when Input.IsActionJustPressed("Interact"):
-            //     Transition(_interactState);
-            //     break;}
-
-            default:
-                Stand();
-                break;
-        }
-
-        void Stand()
-        {
-            _body.Velocity = new Vector2(
-                Mathf.MoveToward(_body.Velocity.X, 0, _friction * (float)delta),
-                _body.Velocity.Y
-            );
         }
     }
 }

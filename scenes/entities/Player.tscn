@@ -202,10 +202,10 @@ size = Vector2(4, 10)
 polygon = PackedVector2Array(-2, -10, -2, 2.08165e-12, 2, 2.08165e-12, 2, -10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_at2mb"]
-size = Vector2(5, 6)
+size = Vector2(5, 4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o7l1g"]
-size = Vector2(2, 10)
+size = Vector2(4, 1)
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 3
@@ -228,7 +228,7 @@ current = true
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_i3wem")
-animation = &"Roll"
+animation = &"Idle"
 autoplay = "Idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -249,7 +249,7 @@ shape = SubResource("RectangleShape2D_at2mb")
 [node name="LadderDetector2D" parent="." instance=ExtResource("3_py7m2")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LadderDetector2D"]
-position = Vector2(4.76837e-07, -5)
+position = Vector2(-1.14083e-05, -0.5)
 rotation = -3.14159
 shape = SubResource("RectangleShape2D_o7l1g")
 debug_color = Color(0.886275, 0.290196, 0.411765, 0.419608)
@@ -269,15 +269,15 @@ _runningState = NodePath("../Running")
 _jumpingState = NodePath("../Jumping")
 _crouchingState = NodePath("../Crouching")
 
-[node name="Running" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_ladderDetector", "_standingState", "_fallingState", "_jumpingState", "_climbingState", "_crouchingState")]
+[node name="Running" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_standingState", "_fallingState", "_jumpingState", "_climbingState", "_ladderDetector", "_crouchingState")]
 script = ExtResource("7_6bc5y")
 _body = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
-_ladderDetector = NodePath("../../LadderDetector2D")
 _standingState = NodePath("../Standing")
 _fallingState = NodePath("../Falling")
 _jumpingState = NodePath("../Jumping")
 _climbingState = NodePath("../Climbing")
+_ladderDetector = NodePath("../../LadderDetector2D")
 _crouchingState = NodePath("../Crouching")
 
 [node name="Falling" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_airJumpingState", "_landingState", "_swimmingState", "_waterDetector", "_climbingState", "_ladderDetector")]
@@ -291,26 +291,26 @@ _waterDetector = NodePath("../../WaterDetector2D")
 _climbingState = NodePath("../Climbing")
 _ladderDetector = NodePath("../../LadderDetector2D")
 
-[node name="Jumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallingState")]
+[node name="Jumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_soundEffect", "_fallingState")]
 script = ExtResource("9_fb7lo")
 _body = NodePath("../..")
-_jumpEffect = NodePath("../../SoundEffects/PlayerJumpEffect")
+_soundEffect = NodePath("../../SoundEffects/PlayerJumpEffect")
 _fallingState = NodePath("../Falling")
 
-[node name="AirJumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_jumpEffect", "_fallingState")]
+[node name="AirJumping" type="Node" parent="State" node_paths=PackedStringArray("_body", "_soundEffect", "_fallingState")]
 script = ExtResource("9_fb7lo")
 _body = NodePath("../..")
-_jumpEffect = NodePath("../../SoundEffects/PlayerAirJumpEffect")
+_soundEffect = NodePath("../../SoundEffects/PlayerAirJumpEffect")
 _velocity = 110.0
 _fallingState = NodePath("../Falling")
 
-[node name="Landing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_landEffect", "_runningState", "_crouchingState", "_standingState")]
+[node name="Landing" type="Node" parent="State" node_paths=PackedStringArray("_body", "_soundEffect", "_standingState", "_runningState", "_crouchingState")]
 script = ExtResource("10_af6b7")
 _body = NodePath("../..")
-_landEffect = NodePath("../../SoundEffects/PlayerLandEffect")
+_soundEffect = NodePath("../../SoundEffects/PlayerLandEffect")
+_standingState = NodePath("../Standing")
 _runningState = NodePath("../Running")
 _crouchingState = NodePath("../Crouching")
-_standingState = NodePath("../Standing")
 
 [node name="Swimming" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_waterDetector", "_splashEffect", "_fallingState")]
 script = ExtResource("11_elb0q")
@@ -329,21 +329,21 @@ _fallingState = NodePath("../Falling")
 _jumpingState = NodePath("../Jumping")
 _standingState = NodePath("../Standing")
 
-[node name="Crouching" type="Node" parent="State" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_fallingState", "_jumpingState", "_standingState", "_rollingState")]
+[node name="Crouching" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_collider", "_fallingState", "_jumpingState", "_standingState", "_rollingState")]
 script = ExtResource("13_n33vl")
 _body = NodePath("../..")
-_collider = NodePath("../../CollisionShape2D")
 _sprite = NodePath("../../AnimatedSprite2D")
+_collider = NodePath("../../CollisionShape2D")
 _fallingState = NodePath("../Falling")
 _jumpingState = NodePath("../Jumping")
 _standingState = NodePath("../Standing")
 _rollingState = NodePath("../Rolling")
 
-[node name="Rolling" type="Node" parent="State" node_paths=PackedStringArray("_body", "_collider", "_sprite", "_crouchingState", "_fallingState")]
+[node name="Rolling" type="Node" parent="State" node_paths=PackedStringArray("_body", "_sprite", "_collider", "_crouchingState", "_fallingState")]
 script = ExtResource("14_w2iv3")
 _body = NodePath("../..")
-_collider = NodePath("../../CollisionShape2D")
 _sprite = NodePath("../../AnimatedSprite2D")
+_collider = NodePath("../../CollisionShape2D")
 _crouchingState = NodePath("../Crouching")
 _fallingState = NodePath("../Falling")
 

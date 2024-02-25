@@ -6,26 +6,30 @@ public partial class PlayerRolling : State
     private CharacterBody2D _body;
 
     [Export]
-    private CollisionShape2D _collider;
-
-    [Export]
     private AnimatedSprite2D _sprite;
 
+    [ExportGroup("Collider")]
     [Export]
-    private float _maximumVelocity = 90;
-
-    [Export]
-    private float _traction = 700;
-
-    [Export]
-    private float _friction = 200;
+    private CollisionShape2D _collider;
 
     [Export]
     private int _colliderRadius = 2;
 
+    [ExportGroup("Movement")]
+    [Export]
+    private float _acceleration = 700;
+
+    [Export]
+    private float _deceleration = 200;
+
+    [Export]
+    private float _maximumVelocity = 90;
+
+    [ExportGroup("Crouching")]
     [Export]
     private State _crouchingState;
 
+    [ExportGroup("Falling")]
     [Export]
     private State _fallingState;
 
@@ -51,7 +55,7 @@ public partial class PlayerRolling : State
     {
         switch (true)
         {
-            case true when Input.IsActionJustPressed("MoveUp"):
+            case true when Input.IsActionJustPressed(Controller.Up):
                 Transition(_crouchingState);
                 break;
 
@@ -84,34 +88,16 @@ public partial class PlayerRolling : State
 
     private void Roll(double delta)
     {
-        float input = Input.GetAxis("MoveLeft", "MoveRight");
+        float direction = Controller.GetHorizontalDirection();
 
-        if (input == 0)
-            Decelerate(delta);
-        else
-            Accelerate(input, delta);
-
-        _sprite.SpeedScale = Mathf.Abs(input);
-    }
-
-    private void Decelerate(double delta)
-    {
-        _body.Velocity = new Vector2(
-            Mathf.MoveToward(_body.Velocity.X, 0, _friction * (float)delta),
-            _body.Velocity.Y
+        _body.Accelerate(
+            delta: delta,
+            direction: direction,
+            acceleration: _acceleration,
+            deceleration: _deceleration,
+            limit: _maximumVelocity
         );
-    }
 
-    private void Accelerate(float input, double delta)
-    {
-        _sprite.FlipH = input > 0;
-
-        if (
-            (input < 0 && _body.Velocity.X > -_maximumVelocity)
-            || (input > 0 && _body.Velocity.X < _maximumVelocity)
-        )
-        {
-            _body.Velocity += new Vector2(input * _traction * (float)delta, 0);
-        }
+        _sprite.SynchronizeAnimation(direction);
     }
 }

@@ -8,28 +8,36 @@ public partial class PlayerRunning : State
     [Export]
     private AnimatedSprite2D _sprite;
 
+    [ExportGroup("Movement")]
     [Export]
-    private TileDetector2D _ladderDetector;
+    private float _acceleration = 800;
+
+    [Export]
+    private float _deceleration = 600;
 
     [Export]
     private float _maximumVelocity = 70;
 
-    // @todo Get this value from tile metadata.
-    [Export]
-    private float _traction = 800;
-
+    [ExportGroup("Standing")]
     [Export]
     private State _standingState;
 
+    [ExportGroup("Falling")]
     [Export]
     private State _fallingState;
 
+    [ExportGroup("Jumping")]
     [Export]
     private State _jumpingState;
 
+    [ExportGroup("Climbing")]
     [Export]
     private State _climbingState;
 
+    [Export]
+    private TileDetector2D _ladderDetector;
+
+    [ExportGroup("Crouching")]
     [Export]
     private State _crouchingState;
 
@@ -40,11 +48,11 @@ public partial class PlayerRunning : State
 
     public override void UpdatePhysics(double delta)
     {
-        float input = Input.GetAxis("MoveLeft", "MoveRight");
+        float direction = Controller.GetHorizontalDirection();
 
         switch (true)
         {
-            case true when input == 0:
+            case true when direction == 0 && _body.Velocity.X == 0:
                 Transition(_standingState);
                 break;
 
@@ -52,35 +60,36 @@ public partial class PlayerRunning : State
                 Transition(_fallingState);
                 break;
 
-            case true when Input.IsActionJustPressed("Jump"):
+            case true when Input.IsActionJustPressed(Controller.A):
                 Transition(_jumpingState);
                 break;
 
             case true
                 when _ladderDetector.IsOverlapping
-                    && Input.IsActionPressed("MoveUp"):
+                    && Input.IsActionPressed(Controller.Up):
                 Transition(_climbingState);
                 break;
 
-            case true when Input.IsActionJustPressed("MoveDown"):
+            case true when Input.IsActionJustPressed(Controller.Down):
                 Transition(_crouchingState);
                 break;
 
             default:
-                Run(input, delta);
+                Run(delta, direction);
                 break;
         }
     }
 
-    private void Run(float input, double delta)
+    private void Run(double delta, float direction)
     {
-        if (
-            (input < 0 && _body.Velocity.X > -_maximumVelocity)
-            || (input > 0 && _body.Velocity.X < _maximumVelocity)
-        )
-            _body.Velocity += new Vector2(_traction * (float)delta * input, 0);
+        _body.Accelerate(
+            delta: delta,
+            direction: direction,
+            acceleration: _acceleration,
+            deceleration: _deceleration,
+            limit: _maximumVelocity
+        );
 
-        _sprite.FlipH = input > 0;
-        _sprite.SpeedScale = Mathf.Abs(input);
+        _sprite.SynchronizeAnimation(direction);
     }
 }

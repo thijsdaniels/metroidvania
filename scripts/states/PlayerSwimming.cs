@@ -8,21 +8,32 @@ public partial class PlayerSwimming : State
     [Export]
     private AnimatedSprite2D _sprite;
 
+    [ExportGroup("Swimming")]
     [Export]
     private TileDetector2D _waterDetector;
 
     [Export]
-    private float _sinkAcceleration = 250;
+    private float _gravity = 150;
 
     [Export]
-    private float _swimVelocity = 40;
+    private float _terminalVelocity = 5;
 
     [Export]
-    private float _leapVelocity = 90;
+    private float _maximumVelocity = 40;
+
+    [Export]
+    private float _acceleration = 400;
+
+    [Export]
+    private float _deceleration = 600;
+
+    [Export]
+    private float _leapVelocity = 110;
 
     [Export]
     private AudioStreamPlayer2D _splashEffect;
 
+    [ExportGroup("Falling")]
     [Export]
     private State _fallingState;
 
@@ -40,7 +51,7 @@ public partial class PlayerSwimming : State
 
     private void OnWaterExited()
     {
-        if (Input.IsActionPressed("MoveUp"))
+        if (Input.IsActionPressed(Controller.Up))
         {
             _splashEffect.Play();
 
@@ -55,43 +66,33 @@ public partial class PlayerSwimming : State
 
     public override void UpdatePhysics(double delta)
     {
-        Swim();
+        Swim(delta);
         Sink(delta);
+    }
+
+    private void Swim(double delta)
+    {
+        Vector2 direction = Controller.GetDirection();
+
+        _body.Accelerate(
+            delta: delta,
+            direction: direction,
+            acceleration: _acceleration,
+            deceleration: _deceleration,
+            limit: _maximumVelocity
+        );
+
+        if (direction == Vector2.Zero)
+            _sprite.Play("Fall");
+        else
+            _sprite.Play("Swim");
+
+        _sprite.SynchronizeAnimation(direction);
     }
 
     private void Sink(double delta)
     {
-        _body.Velocity += new Vector2(0, _sinkAcceleration * (float)delta);
-    }
-
-    private void Swim()
-    {
-        Vector2 direction = Input.GetVector(
-            "MoveLeft",
-            "MoveRight",
-            "MoveUp",
-            "MoveDown"
-        );
-
-        if (direction == Vector2.Zero)
-        {
-            _sprite.Play("Fall");
-
-            _body.Velocity = new Vector2(
-                Mathf.MoveToward(_body.Velocity.X, 0, _swimVelocity),
-                Mathf.MoveToward(_body.Velocity.Y, 0, _swimVelocity)
-            );
-        }
-        else
-        {
-            _sprite.Play("Swim");
-
-            _body.Velocity = direction * _swimVelocity;
-
-            if (direction.X > 0)
-                _sprite.FlipH = true;
-            else if (direction.X < 0)
-                _sprite.FlipH = false;
-        }
+        if (_body.Velocity.Y < _terminalVelocity)
+            _body.Velocity += new Vector2(0, _gravity * (float)delta);
     }
 }

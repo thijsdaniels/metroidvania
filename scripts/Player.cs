@@ -4,17 +4,9 @@ public partial class Player : CharacterBody2D
 {
     public override void _PhysicsProcess(double delta)
     {
-        if (Input.IsActionJustPressed("MoveDown"))
-        {
-            SetCollisionMaskValue(2, false);
-            Position += new Vector2(0, 1);
-            MoveAndSlide();
-        }
-
-        if (Input.IsActionJustReleased("MoveDown"))
-        {
-            SetCollisionMaskValue(2, true);
-        }
+        /// @todo I should probably let the states determine whether the player
+        /// can drop through the one-way-collision tiles or not.
+        this.DropThroughFloor();
 
         MoveAndSlide();
     }

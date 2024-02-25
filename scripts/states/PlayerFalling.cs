@@ -8,24 +8,24 @@ public partial class PlayerFalling : State
     [Export]
     private AnimatedSprite2D _sprite;
 
-    [ExportGroup("Falling")]
+    [ExportGroup("Gravity")]
     [Export]
-    private float _gravity = 300;
+    private float _gravity = 400;
 
     [Export]
-    private float _terminalVelocity = 100;
+    private float _terminalVelocity = 150;
 
-    [ExportGroup("Moving")]
+    [ExportGroup("Movement")]
+    [Export]
+    private float _acceleration = 600;
+
+    [Export]
+    private float _deceleration = 100;
+
     [Export]
     private float _maximumVelocity = 50;
 
-    [Export]
-    private float _traction = 600;
-
-    [Export]
-    private float _friction = 400;
-
-    [ExportGroup("Jumping")]
+    [ExportGroup("Air Jumping")]
     [Export]
     private State _airJumpingState;
 
@@ -67,7 +67,7 @@ public partial class PlayerFalling : State
         switch (true)
         {
             case true
-                when Input.IsActionJustPressed("Jump")
+                when Input.IsActionJustPressed(Controller.A)
                     && _airJumpsRemaining > 0:
                 _airJumpsRemaining--;
                 Transition(_airJumpingState);
@@ -85,8 +85,8 @@ public partial class PlayerFalling : State
             case true
                 when _ladderDetector.IsOverlapping
                     && (
-                        Input.IsActionPressed("MoveUp")
-                        || Input.IsActionPressed("MoveDown")
+                        Input.IsActionPressed(Controller.Up)
+                        || Input.IsActionPressed(Controller.Down)
                     ):
                 Transition(_climbingState);
                 break;
@@ -100,45 +100,22 @@ public partial class PlayerFalling : State
 
     private void Fall(double delta)
     {
-        _body.Velocity = new Vector2(
-            _body.Velocity.X,
-            Mathf.Min(
-                _body.Velocity.Y + (_gravity * (float)delta),
-                _terminalVelocity
-            )
-        );
+        if (_body.Velocity.Y < _terminalVelocity)
+            _body.Velocity += new Vector2(0, _gravity * (float)delta);
     }
 
     private void Move(double delta)
     {
-        float input = Input.GetAxis("MoveLeft", "MoveRight");
+        float direction = Controller.GetHorizontalDirection();
 
-        if (input == 0)
-            Decelerate(delta);
-        else
-            Accelerate(input, delta);
-
-        _sprite.SpeedScale = Mathf.Abs(input);
-    }
-
-    private void Decelerate(double delta)
-    {
-        _body.Velocity = new Vector2(
-            Mathf.MoveToward(_body.Velocity.X, 0, _friction * (float)delta),
-            _body.Velocity.Y
+        _body.Accelerate(
+            delta: delta,
+            direction: direction,
+            acceleration: _acceleration,
+            deceleration: _deceleration,
+            limit: _maximumVelocity
         );
-    }
 
-    private void Accelerate(float input, double delta)
-    {
-        _sprite.FlipH = input > 0;
-
-        if (
-            (input < 0 && _body.Velocity.X > -_maximumVelocity)
-            || (input > 0 && _body.Velocity.X < _maximumVelocity)
-        )
-        {
-            _body.Velocity += new Vector2(input * _traction * (float)delta, 0);
-        }
+        _sprite.SynchronizeAnimation(direction);
     }
 }
