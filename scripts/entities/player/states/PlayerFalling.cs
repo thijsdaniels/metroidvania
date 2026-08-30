@@ -17,13 +17,13 @@ public partial class PlayerFalling : State
 
     [ExportGroup("Movement")]
     [Export]
-    private float _acceleration = 600;
+    private float _acceleration = 1200;
 
     [Export]
     private float _deceleration = 100;
 
     [Export]
-    private float _maximumVelocity = 50;
+    private float _maximumVelocity = 70;
 
     [ExportGroup("Air Jumping")]
     [Export]
@@ -108,14 +108,13 @@ public partial class PlayerFalling : State
     {
         float direction = Controller.GetHorizontalDirection();
 
-        _body.Accelerate(
-            delta: delta,
+        _body.MoveWithInertia(
             direction: direction,
-            acceleration: _acceleration,
-            deceleration: _deceleration,
+            acceleration: _acceleration * (float)delta,
+            deceleration: _deceleration * (float)delta,
             limit: _maximumVelocity
         );
 
-        _sprite.SynchronizeAnimation(direction);
+        _sprite.SynchronizeAnimation(-direction);
     }
 }

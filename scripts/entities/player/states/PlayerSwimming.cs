@@ -74,11 +74,10 @@ public partial class PlayerSwimming : State
     {
         Vector2 direction = Controller.GetDirection();
 
-        _body.Accelerate(
-            delta: delta,
+        _body.MoveWithInertia(
             direction: direction,
-            acceleration: _acceleration,
-            deceleration: _deceleration,
+            acceleration: _acceleration * (float)delta,
+            deceleration: _deceleration * (float)delta,
             limit: _maximumVelocity
         );
 
@@ -87,7 +86,7 @@ public partial class PlayerSwimming : State
         else
             _sprite.Play("Swim");
 
-        _sprite.SynchronizeAnimation(direction);
+        _sprite.SynchronizeAnimation(-direction);
     }
 
     private void Sink(double delta)

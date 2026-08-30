@@ -84,14 +84,13 @@ public partial class PlayerClimbing : State
     {
         Vector2 direction = Controller.GetDirection();
 
-        _body.Accelerate(
-            delta: delta,
+        _body.MoveWithIneratia(
             direction: direction,
-            acceleration: _climbAcceleration,
-            deceleration: _climbDeceleration,
+            acceleration: _climbAcceleration * (float)delta,
+            deceleration: _climbDeceleration * (float)delta,
             limit: _climbVelocity
         );
 
-        _sprite.SynchronizeAnimation(direction);
+        _sprite.SynchronizeAnimation(-direction);
     }
 }

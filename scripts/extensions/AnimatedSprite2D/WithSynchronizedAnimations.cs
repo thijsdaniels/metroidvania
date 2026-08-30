@@ -1,6 +1,6 @@
 using Godot;
 
-public static class MovementControlledAnimations
+public static class WithSynchronizedAnimations
 {
     public static void SynchronizeAnimation(
         this AnimatedSprite2D sprite,
@@ -18,6 +18,6 @@ public static class MovementControlledAnimations
         sprite.SpeedScale = direction.Length();
 
         if (direction.X != 0)
-            sprite.FlipH = direction.X > 0;
+            sprite.FlipH = direction.X < 0;
     }
 }

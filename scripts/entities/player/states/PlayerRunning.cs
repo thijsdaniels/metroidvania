@@ -10,10 +10,10 @@ public partial class PlayerRunning : State
 
     [ExportGroup("Movement")]
     [Export]
-    private float _acceleration = 800;
+    private float _acceleration = 1600;
 
     [Export]
-    private float _deceleration = 600;
+    private float _deceleration = 800;
 
     [Export]
     private float _maximumVelocity = 70;
@@ -82,14 +82,13 @@ public partial class PlayerRunning : State
 
     private void Run(double delta, float direction)
     {
-        _body.Accelerate(
-            delta: delta,
+        _body.MoveWithInertia(
             direction: direction,
-            acceleration: _acceleration,
-            deceleration: _deceleration,
+            acceleration: _acceleration * (float)delta,
+            deceleration: _deceleration * (float)delta,
             limit: _maximumVelocity
         );
 
-        _sprite.SynchronizeAnimation(direction);
+        _sprite.SynchronizeAnimation(-direction);
     }
 }

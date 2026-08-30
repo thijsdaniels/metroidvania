@@ -102,14 +102,13 @@ public partial class PlayerCrouching : State
     {
         float direction = Controller.GetHorizontalDirection();
 
-        _body.Accelerate(
-            delta: delta,
+        _body.MoveWithInertia(
             direction: direction,
-            acceleration: _acceleration,
-            deceleration: _deceleration,
+            acceleration: _acceleration * (float)delta,
+            deceleration: _deceleration * (float)delta,
             limit: _maximumVelocity
         );
 
-        _sprite.SynchronizeAnimation(direction);
+        _sprite.SynchronizeAnimation(-direction);
     }
 }
