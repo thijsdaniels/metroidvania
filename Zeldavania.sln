@@ -1,6 +1,6 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metroidvania", "Metroidvania.csproj", "{68646132-9E31-4237-86B5-3C0A0CAB6423}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zeldavania", "Zeldavania.csproj", "{68646132-9E31-4237-86B5-3C0A0CAB6423}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

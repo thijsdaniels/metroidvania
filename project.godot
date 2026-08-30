@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="Metroidvania"
+config/name="Zeldavania"
 run/main_scene="res://scenes/environments/World.tscn"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 
@@ -29,7 +29,7 @@ window/stretch/scale_mode="integer"
 
 [dotnet]
 
-project/assembly_name="Metroidvania"
+project/assembly_name="Zeldavania"
 
 [input]
 
