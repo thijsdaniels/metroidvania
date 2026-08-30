@@ -1,32 +1,42 @@
 schema: spec-driven
 
-# Project context (optional)
+# Project context
 # This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Domain: Zeldavania (2D Side-Scrolling Action-Adventure / Metroidvania + Zelda tropes)
+  Engine: Godot 4.7+ (.NET / C# 8.0 target)
+  Core Architecture:
+    - Node-based Finite State Machine (FiniteStateMachine, State) for entities
+    - Modular trait/component system (IFlammable, IBreakable, etc.) for systemic interactions
+    - C# static extension methods in scripts/extensions/<GodotType>/ for reusable math/movement
+    - Area2D detectors (TileDetector2D) for environmental layers (ladders, water, triggers)
+  Coding & Style Conventions:
+    - Code Formatter: CSharpier (printWidth: 80, tabWidth: 4, useTabs: false)
+    - Naming: PascalCase for types/methods/signals; _camelCase for private/protected fields; camelCase for locals
+    - Dependencies: Inject node references via [Export] and [ExportGroup("...")] attributes
+    - Technical Debt / Notes: Annotate with /// @todo <description>
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+# Per-artifact rules
+rules:
+  proposal:
+    - Clearly outline problem statement, proposed solution, and non-goals
+    - If applicable, reference related GitHub issue (e.g. Issue #X)
+  specs:
+    - Use clear requirement statements and testable scenarios (Given / When / Then)
+    - Specify state machine transitions and trait interfaces explicitly where applicable
+  design:
+    - Document node composition hierarchy, signals, and inspector export fields
+    - Detail interaction between systemic traits, states, and engine nodes
+  tasks:
+    - Break implementation down into small, ordered, testable steps
+    - Group tasks logically (e.g., Core Utilities -> Components/States -> Scene/Inspector Wiring -> Verification)
 
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+# Per-operation guidance
+operations:
+  apply:
+    guidance:
+      - Adhere to C# naming conventions and CSharpier formatting
+      - Ensure exported fields in C# classes have matching [Export] attributes
+  archive:
+    guidance:
+      - Verify that changes are synced to main specs before archiving
