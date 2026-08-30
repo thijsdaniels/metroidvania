@@ -214,7 +214,6 @@ script = ExtResource("1_tiuq8")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -5)
-zoom = Vector2(10, 10)
 position_smoothing_enabled = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
