@@ -94,6 +94,12 @@ Start={
 2d_physics/layer_2="Platforms"
 2d_physics/layer_3="Liquids"
 2d_physics/layer_4="Climbables"
+2d_physics/layer_5="PlayerHurtbox"
+2d_physics/layer_6="EnemyHitbox"
+2d_physics/layer_7="PlayerHitbox"
+2d_physics/layer_8="EnemyHurtbox"
+2d_physics/layer_9="Player"
+2d_physics/layer_10="Enemy"
 
 [rendering]
 

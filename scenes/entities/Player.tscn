@@ -18,6 +18,11 @@
 [ext_resource type="Script" path="res://scripts/entities/player/states/PlayerRolling.cs" id="14_pvtrv"]
 [ext_resource type="AudioStream" uid="uid://qxpiwxrt7ow5" path="res://assets/sounds/effects/playerAirJump.wav" id="15_yjmct"]
 [ext_resource type="AudioStream" uid="uid://bejdegdgy1bsn" path="res://assets/sounds/effects/doorOpen.wav" id="17_nlsyk"]
+[ext_resource type="Script" path="res://scripts/combat/Damageable.cs" id="18_dmg01"]
+[ext_resource type="Script" path="res://scripts/combat/Hurtbox.cs" id="19_hrt02"]
+[ext_resource type="Script" path="res://scripts/entities/player/states/PlayerHurt.cs" id="20_hrt03"]
+[ext_resource type="AudioStream" uid="uid://cb5v40pnd40l4" path="res://assets/sounds/effects/playerHit.wav" id="21_hit01"]
+[ext_resource type="AudioStream" uid="uid://dtc13l1lsmb5g" path="res://assets/sounds/effects/playerDie.wav" id="22_die02"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a7j1y"]
 atlas = ExtResource("2_tbmxl")
@@ -207,10 +212,29 @@ size = Vector2(5, 4)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o7l1g"]
 size = Vector2(4, 1)
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
-collision_layer = 3
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurtbox_player"]
+size = Vector2(6, 12)
+
+[node name="CharacterBody2D" type="CharacterBody2D" node_paths=PackedStringArray("_damageable", "_deathSoundEffect")]
+collision_layer = 256
 collision_mask = 3
 script = ExtResource("1_tiuq8")
+_damageable = NodePath("Damageable")
+_deathSoundEffect = NodePath("SoundEffects/PlayerDieEffect")
+
+[node name="Damageable" type="Node" parent="."]
+script = ExtResource("18_dmg01")
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("_damageable")]
+collision_layer = 16
+collision_mask = 32
+script = ExtResource("19_hrt02")
+_damageable = NodePath("../Damageable")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_2r1l2")
+debug_color = Color(0.9, 0.2, 0.2, 0.42)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -5)
@@ -346,6 +370,16 @@ _collider = NodePath("../../CollisionShape2D")
 _crouchingState = NodePath("../Crouching")
 _fallingState = NodePath("../Falling")
 
+[node name="Hurt" type="Node" parent="State" node_paths=PackedStringArray("_body", "_hurtbox", "_damageable", "_sprite", "_soundEffect", "_standingState", "_fallingState")]
+script = ExtResource("20_hrt03")
+_body = NodePath("../..")
+_hurtbox = NodePath("../../Hurtbox")
+_damageable = NodePath("../../Damageable")
+_sprite = NodePath("../../AnimatedSprite2D")
+_soundEffect = NodePath("../../SoundEffects/PlayerHitEffect")
+_standingState = NodePath("../Standing")
+_fallingState = NodePath("../Falling")
+
 [node name="SoundEffects" type="Node2D" parent="."]
 
 [node name="PlayerJumpEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
@@ -360,3 +394,9 @@ stream = ExtResource("11_m68mo")
 [node name="PlayerSplashEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("17_nlsyk")
 volume_db = -5.0
+
+[node name="PlayerHitEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("21_hit01")
+
+[node name="PlayerDieEffect" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("22_die02")
