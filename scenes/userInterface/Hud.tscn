@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c6l8v2e3k47am"]
+
+[ext_resource type="Script" uid="uid://dpkjy2ynkhfyk" path="res://scripts/userInterface/Hud.cs" id="1_hud"]
+[ext_resource type="Script" uid="uid://c3i2xuvx0x7tb" path="res://scripts/userInterface/HealthBar.cs" id="2_hbar"]
+
+[node name="Hud" type="CanvasLayer" unique_id=1942190552 node_paths=PackedStringArray("_healthBar")]
+script = ExtResource("1_hud")
+_healthBar = NodePath("MarginContainer/HealthBar")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=810419335]
+offset_right = 40.0
+offset_bottom = 5.0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+
+[node name="HealthBar" type="Control" parent="MarginContainer" unique_id=1729387166]
+custom_minimum_size = Vector2(40, 5)
+layout_mode = 2
+script = ExtResource("2_hbar")

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cj6jt7wugt5b7" path="res://scenes/entities/Player.tscn" id="4_xidib"]
 [ext_resource type="PackedScene" uid="uid://c0uq66yeqxa7m" path="res://scenes/entities/Goblin.tscn" id="5_2nnh2"]
 [ext_resource type="PackedScene" uid="uid://c18mc062ss3el" path="res://scenes/userInterface/PauseMenu.tscn" id="6_deqga"]
+[ext_resource type="PackedScene" uid="uid://c6l8v2e3k47am" path="res://scenes/userInterface/Hud.tscn" id="7_hud"]
 
 [node name="Node2D" type="Node2D"]
 metadata/_edit_lock_ = true
@@ -55,6 +56,9 @@ HearingArea = NodePath("HearingArea")
 VisionArea = NodePath("VisionArea")
 WaterDetector = NodePath("WaterDetector2D")
 
+[node name="Hud" parent="." node_paths=PackedStringArray("_playerDamageable") instance=ExtResource("7_hud")]
+_playerDamageable = NodePath("../Player/Damageable")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="PauseMenu" parent="CanvasLayer" node_paths=PackedStringArray("_resumeButton", "_restartButton", "_quitButton", "_animationPlayer") instance=ExtResource("6_deqga")]
@@ -63,3 +67,4 @@ _resumeButton = NodePath("CenterContainer/PanelContainer/VBoxContainer/Resume")
 _restartButton = NodePath("CenterContainer/PanelContainer/VBoxContainer/Restart")
 _quitButton = NodePath("CenterContainer/PanelContainer/VBoxContainer/Quit")
 _animationPlayer = NodePath("AnimationPlayer")
+

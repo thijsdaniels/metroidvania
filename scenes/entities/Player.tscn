@@ -224,6 +224,8 @@ _deathSoundEffect = NodePath("SoundEffects/PlayerDieEffect")
 
 [node name="Damageable" type="Node" parent="."]
 script = ExtResource("18_dmg01")
+MaxHitPoints = 12
+CurrentHitPoints = 12
 
 [node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("_damageable")]
 collision_layer = 16
