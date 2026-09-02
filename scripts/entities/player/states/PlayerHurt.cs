@@ -31,7 +31,7 @@ public partial class PlayerHurt : State
     private float _hitstunDuration = 0.25f;
 
     [Export]
-    private float _invulnerabilityDuration = 1.2f;
+    private float _invulnerabilityDuration = 0.75f;
 
     [Export]
     private float _upwardKnockbackRatio = 0.5f;
@@ -142,6 +142,7 @@ public partial class PlayerHurt : State
             if (_hurtbox != null)
             {
                 _hurtbox.IsInvulnerable = false;
+                _hurtbox.CheckOverlapping();
             }
             if (_sprite != null)
             {

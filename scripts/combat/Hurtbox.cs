@@ -41,4 +41,21 @@ public partial class Hurtbox : Area2D
         EmitSignal(SignalName.OnHurt, hit.Damage, hit.Origin, hit.Force);
         _damageable?.TakeDamage(hit);
     }
+
+    public void CheckOverlapping()
+    {
+        if (IsInvulnerable)
+        {
+            return;
+        }
+
+        foreach (var area in GetOverlappingAreas())
+        {
+            if (area is Hitbox hitbox && (hitbox.Monitoring || hitbox.Monitorable))
+            {
+                ReceiveHit(new Hit(hitbox.Damage, hitbox.GlobalPosition, hitbox.Force));
+                break;
+            }
+        }
+    }
 }

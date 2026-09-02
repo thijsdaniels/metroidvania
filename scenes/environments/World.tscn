@@ -1,16 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://btoy1ikrreinw"]
+[gd_scene format=3 uid="uid://btoy1ikrreinw"]
 
 [ext_resource type="AudioStream" uid="uid://dn6uu8qvdxx6d" path="res://assets/sounds/music/temple.ogg" id="1_r1tax"]
 [ext_resource type="TileSet" uid="uid://bphl3ypo2c3ak" path="res://TileSet.tres" id="2_rep4x"]
 [ext_resource type="PackedScene" uid="uid://cj6jt7wugt5b7" path="res://scenes/entities/Player.tscn" id="4_xidib"]
 [ext_resource type="PackedScene" uid="uid://c0uq66yeqxa7m" path="res://scenes/entities/Goblin.tscn" id="5_2nnh2"]
 [ext_resource type="PackedScene" uid="uid://c18mc062ss3el" path="res://scenes/userInterface/PauseMenu.tscn" id="6_deqga"]
+[ext_resource type="PackedScene" uid="uid://cjwpr0apqprm4" path="res://scenes/objects/MovingPlatform.tscn" id="7_daqef"]
 [ext_resource type="PackedScene" uid="uid://c6l8v2e3k47am" path="res://scenes/userInterface/Hud.tscn" id="7_hud"]
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="Node2D" unique_id=1939464797]
 metadata/_edit_lock_ = true
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1185213581]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,12 +23,12 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0939093, 0.106358, 0.171831, 1)
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=559304439]
 stream = ExtResource("1_r1tax")
 volume_db = -10.0
 autoplay = true
 
-[node name="Environment" type="TileMap" parent="."]
+[node name="Environment" type="TileMap" parent="." unique_id=1910117761]
 tile_set = ExtResource("2_rep4x")
 format = 2
 layer_0/name = "Background"
@@ -41,30 +42,22 @@ layer_2/z_index = 1
 layer_2/tile_data = PackedInt32Array(524274, 131072, 11, 524275, 131072, 11, 524276, 131072, 11, 524280, 131072, 11, 524281, 131072, 11, 524282, 131072, 11, 589810, 131072, 11, 655346, 131072, 11, 589811, 131072, 11, 655347, 131072, 11, 589812, 131072, 11, 655348, 131072, 11, 589813, 131072, 11, 655349, 131072, 11, 589814, 131072, 11, 655350, 131072, 11, 720886, 131072, 11, 589815, 131072, 11, 655351, 131072, 11, 720887, 131072, 11, 589816, 131072, 11, 655352, 131072, 11, 720888, 131072, 11, 589817, 131072, 11, 655353, 131072, 11, 720889, 131072, 11, 589818, 131072, 11, 655354, 131072, 11, 720890, 131072, 11, 786424, 131072, 11, 851960, 131072, 11, 786425, 131072, 11, 851961, 131072, 11, 917497, 131072, 11, 983033, 131072, 11, 786426, 131072, 11, 851962, 131072, 11, 917498, 131072, 11, 983034, 131072, 11, 851963, 131072, 11, 917499, 131072, 11, 983035, 131072, 11, 851964, 131072, 11, 917500, 131072, 11, 983036, 131072, 11, 851965, 131072, 11, 917501, 131072, 11, 983037, 131072, 11, 851966, 131072, 11, 917502, 131072, 11, 983038, 131072, 11, 851967, 131072, 11, 917503, 131072, 11, 983039, 131072, 11, 786432, 131072, 11, 851968, 131072, 11, 917504, 131072, 11, 786431, 196608, 10, 720896, 196608, 10, 720884, 131072, 11, 720885, 131072, 11, 65508, 65536, 8, 131044, 65536, 8, 196580, 65536, 8, 262116, 65536, 8, 327652, 65536, 8, 393188, 65536, 8, -28, 65536, 8, 458724, 65536, 9, 524257, 131072, 11, 524258, 131072, 11, 524259, 131072, 11, 524260, 131072, 11, 524261, 131072, 11, 524262, 131072, 11, 589793, 131072, 11, 589794, 131072, 11, 589795, 131072, 11, 589796, 131072, 11, 589797, 131072, 11, 589798, 131072, 11, 655334, 131072, 11, 655333, 131072, 11, 655332, 131072, 11, 655331, 131072, 11, 655330, 131072, 11, 655329, 131072, 11, 720866, 65536, 8, 786402, 65536, 8, 851938, 65536, 8, 917474, 65536, 8, 983010, 65536, 8, -65564, 65536, 8, -131100, 65536, 8, -262172, 65536, 8, -196636, 65536, 8, 720869, 65536, 8, 786405, 65536, 8, 1048546, 0, 11, 851941, 0, 11, 1048570, 65536, 8, 1114106, 65536, 8, 1179642, 65536, 8, 1245178, 65536, 8, 1310714, 0, 11, 524277, 131072, 11, 524278, 131072, 11, 524279, 131072, 11, 458725, 131072, 9, 458723, 65536, 9, 720867, 65536, 8, 786403, 0, 11, 1048571, 65536, 8, 1114107, 65536, 8, 1179643, 0, 11, -524317, 65536, 8, -458781, 65536, 8, -393245, 65536, 8, -327709, 65536, 8, -262173, 65536, 8, -196637, 65536, 8, -131101, 65536, 8, -65565, 65536, 8, -29, 65536, 8, 65507, 65536, 8, 131043, 65536, 8, 196579, 65536, 8, 262115, 65536, 8, 327651, 65536, 8, 393187, 65536, 8, -589852, 65536, 8, -524316, 65536, 8, -458780, 65536, 8, -393244, 65536, 8, -327708, 65536, 8, -786461, 131072, 11, -720925, 131072, 11, -655389, 131072, 11, -786460, 131072, 11, -720924, 131072, 11, -655388, 131072, 11, -655387, 131072, 11, -720923, 131072, 11, -786459, 131072, 11, -786458, 131072, 11, -720922, 131072, 11, -655386, 131072, 11, -655390, 131072, 11, -720926, 131072, 11, -786462, 131072, 11, -786463, 131072, 11, -720927, 131072, 11, -655391, 131072, 11, 655328, 131072, 11, 655327, 131072, 11, 655326, 131072, 11, 655325, 131072, 11, 655324, 131072, 11, 655323, 131072, 11, 720859, 65536, 8, 786395, 65536, 8, 851931, 65536, 8, 917467, 65536, 8, 983003, 65536, 8, 1048539, 65536, 8, 1114075, 65536, 8, 1179611, 65536, 8, 1245147, 65536, 8, 1310683, 65536, 8, 1376219, 65536, 8, 1441755, 65536, 8, 1507291, 0, 11, -589853, 65536, 8, 458722, 0, 9)
 metadata/_edit_lock_ = true
 
-[node name="Player" parent="." instance=ExtResource("4_xidib")]
+[node name="Player" parent="." unique_id=1451007581 instance=ExtResource("4_xidib")]
 position = Vector2(0, -8)
 
-[node name="Goblin" parent="." node_paths=PackedStringArray("HearingArea", "VisionArea", "WaterDetector") instance=ExtResource("5_2nnh2")]
+[node name="Goblin" parent="." unique_id=1969315279 instance=ExtResource("5_2nnh2")]
 position = Vector2(-168, 32)
-HearingArea = NodePath("HearingArea")
-VisionArea = NodePath("VisionArea")
-WaterDetector = NodePath("WaterDetector2D")
 
-[node name="Goblin2" parent="." node_paths=PackedStringArray("HearingArea", "VisionArea", "WaterDetector") instance=ExtResource("5_2nnh2")]
+[node name="Goblin2" parent="." unique_id=1850220387 instance=ExtResource("5_2nnh2")]
 position = Vector2(208, -64)
-HearingArea = NodePath("HearingArea")
-VisionArea = NodePath("VisionArea")
-WaterDetector = NodePath("WaterDetector2D")
 
-[node name="Hud" parent="." node_paths=PackedStringArray("_playerDamageable") instance=ExtResource("7_hud")]
+[node name="Hud" parent="." unique_id=1801539227 node_paths=PackedStringArray("_playerDamageable") instance=ExtResource("7_hud")]
 _playerDamageable = NodePath("../Player/Damageable")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=141610891]
 
-[node name="PauseMenu" parent="CanvasLayer" node_paths=PackedStringArray("_resumeButton", "_restartButton", "_quitButton", "_animationPlayer") instance=ExtResource("6_deqga")]
+[node name="PauseMenu" parent="CanvasLayer" unique_id=395342553 instance=ExtResource("6_deqga")]
 visible = false
-_resumeButton = NodePath("CenterContainer/PanelContainer/VBoxContainer/Resume")
-_restartButton = NodePath("CenterContainer/PanelContainer/VBoxContainer/Restart")
-_quitButton = NodePath("CenterContainer/PanelContainer/VBoxContainer/Quit")
-_animationPlayer = NodePath("AnimationPlayer")
 
+[node name="Path2D" parent="." unique_id=814864681 instance=ExtResource("7_daqef")]
+position = Vector2(-32, -64)

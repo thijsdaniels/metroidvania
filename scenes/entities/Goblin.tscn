@@ -6,8 +6,9 @@
 [ext_resource type="Script" path="res://scripts/entities/enemy/states/EnemySleeping.cs" id="3_ahbhy"]
 [ext_resource type="PackedScene" uid="uid://bqfrngjwqnade" path="res://scenes/utilities/WaterDetector2D.tscn" id="3_sudc5"]
 [ext_resource type="Script" path="res://scripts/entities/enemy/states/EnemyStanding.cs" id="4_5411y"]
-[ext_resource type="Script" path="res://scripts/entities/enemy/states/EnemyRunning.cs" id="6_asnuo"]
+[ext_resource type="Script" path="res://scripts/entities/enemy/states/EnemyChasing.cs" id="6_asnuo"]
 [ext_resource type="Script" path="res://scripts/entities/enemy/states/EnemyFalling.cs" id="7_q7ong"]
+[ext_resource type="Script" path="res://scripts/entities/enemy/states/EnemyAttacking.cs" id="8_atk01"]
 [ext_resource type="Script" path="res://scripts/entities/enemy/states/EnemyDying.cs" id="9_f6xk4"]
 [ext_resource type="Script" path="res://scripts/combat/Hitbox.cs" id="10_hit01"]
 
@@ -93,19 +94,19 @@ region = Rect2(192, 48, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xohgx"]
 atlas = ExtResource("1_kglvi")
-region = Rect2(24, 24, 24, 24)
+region = Rect2(24, 23, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fylpe"]
 atlas = ExtResource("1_kglvi")
-region = Rect2(48, 24, 24, 24)
+region = Rect2(48, 23, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k7vmr"]
 atlas = ExtResource("1_kglvi")
-region = Rect2(72, 24, 24, 24)
+region = Rect2(72, 23, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_alp7m"]
 atlas = ExtResource("1_kglvi")
-region = Rect2(96, 24, 24, 24)
+region = Rect2(96, 23, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hk4s4"]
 atlas = ExtResource("1_kglvi")
@@ -202,18 +203,18 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_xohgx")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fylpe")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_k7vmr")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_alp7m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xohgx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fylpe")
 }],
-"loop": true,
+"loop": false,
 "name": &"Stabbing",
 "speed": 5.0
 }, {
@@ -244,8 +245,8 @@ radius = 64.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x301s"]
 size = Vector2(8, 7)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox_goblin"]
-size = Vector2(10, 8)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_spear_tip"]
+size = Vector2(10, 4)
 
 [node name="CharacterBody2D" type="CharacterBody2D" node_paths=PackedStringArray("HearingArea", "VisionArea", "WaterDetector")]
 collision_layer = 512
@@ -265,16 +266,30 @@ autoplay = "Sleeping"
 position = Vector2(1, -3.5)
 shape = SubResource("RectangleShape2D_klq03")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="ContactHitbox" type="Area2D" parent="."]
 collision_layer = 32
 collision_mask = 16
 script = ExtResource("10_hit01")
 Damage = 1
-Force = 110.0
+Force = 80.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ContactHitbox"]
 position = Vector2(1, -3.5)
 shape = SubResource("RectangleShape2D_klq03")
+debug_color = Color(0.85, 0.5, 0.15, 0.3)
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+position = Vector2(7, -2.5)
+collision_layer = 32
+collision_mask = 16
+monitoring = false
+monitorable = false
+script = ExtResource("10_hit01")
+Damage = 2
+Force = 100.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("RectangleShape2D_spear_tip")
 debug_color = Color(0.85, 0.15, 0.15, 0.42)
 
 [node name="HearingArea" type="Area2D" parent="."]
@@ -312,16 +327,25 @@ _onWake = NodePath("../Standing")
 script = ExtResource("4_5411y")
 _enemy = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
-_onTargetSpotted = NodePath("../Running")
+_onTargetSpotted = NodePath("../Chasing")
 _sleepTimer = NodePath("../../SleepTimer")
 _onSleep = NodePath("../Sleeping")
 
-[node name="Running" type="Node" parent="State" node_paths=PackedStringArray("_enemy", "_sprite", "_onFall", "_onTargetLost")]
+[node name="Chasing" type="Node" parent="State" node_paths=PackedStringArray("_enemy", "_sprite", "_onFall", "_onTargetLost", "_onTargetReached")]
 script = ExtResource("6_asnuo")
 _enemy = NodePath("../..")
 _sprite = NodePath("../../AnimatedSprite2D")
 _onFall = NodePath("../Falling")
 _onTargetLost = NodePath("../Standing")
+_onTargetReached = NodePath("../Attacking")
+
+[node name="Attacking" type="Node" parent="State" node_paths=PackedStringArray("_enemy", "_sprite", "_hitbox", "_onComplete", "_onFall")]
+script = ExtResource("8_atk01")
+_enemy = NodePath("../..")
+_sprite = NodePath("../../AnimatedSprite2D")
+_hitbox = NodePath("../../AttackHitbox")
+_onComplete = NodePath("../Standing")
+_onFall = NodePath("../Falling")
 
 [node name="Falling" type="Node" parent="State" node_paths=PackedStringArray("_enemy", "_sprite", "_onLand", "_onPlunge")]
 script = ExtResource("7_q7ong")
